@@ -15,10 +15,22 @@ interface CategoryType {
   name: string;
 }
 
-
 interface categoryMenuList {
   id: number;
   title: string;
   src: string;
-  href: string
+  href: string;
+}
+
+interface RegisterUserType {
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface LoginUserType {
+  emailAddress: string;
+  password: string;
 }

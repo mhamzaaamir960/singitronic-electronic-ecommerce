@@ -1,8 +1,29 @@
 import MaxWidthWrapper from "../utils/MaxWidthWrapper";
 import { Link } from "react-router-dom";
 import { HeadingSection } from "../components";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 
 function Register() {
+  const [data, setData] = useState<RegisterUserType>({
+    firstName: "",
+    lastName: "",
+    emailAddress: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setData((prevData: RegisterUserType) => ({
+      ...prevData,
+      [name as keyof RegisterUserType]: value,
+    }));
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log(data);
+  };
   return (
     <>
       <HeadingSection pageName="Register">
@@ -22,8 +43,11 @@ function Register() {
                 First Name
               </label>
               <input
+                name="firstName"
                 id="firstName"
                 type="text"
+                value={data.firstName}
+                onChange={handleChange}
                 className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
               />
             </div>
@@ -36,7 +60,10 @@ function Register() {
               </label>
               <input
                 id="lastName"
+                name="lastName"
                 type="text"
+                value={data.lastName}
+                onChange={handleChange}
                 className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
               />
             </div>
@@ -49,7 +76,10 @@ function Register() {
               </label>
               <input
                 id="emailAddress"
+                name="emailAddress"
                 type="text"
+                value={data.emailAddress}
+                onChange={handleChange}
                 className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
               />
             </div>
@@ -62,7 +92,10 @@ function Register() {
               </label>
               <input
                 id="password"
-                type="text"
+                name="password"
+                type="password"
+                value={data.password}
+                onChange={handleChange}
                 className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
               />
             </div>
@@ -75,12 +108,15 @@ function Register() {
               </label>
               <input
                 id="confirmPassword"
-                type="text"
+                name="confirmPassword"
+                type="password"
+                value={data.confirmPassword}
+                onChange={handleChange}
                 className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
               />
             </div>
             <div className="flex items-center gap-x-2 self-start">
-              <input id="privacyPolicy" type="checkbox" />
+              <input required id="privacyPolicy" type="checkbox" />
               <label
                 htmlFor="privacyPolicy"
                 className="select-none text-sm text-gray-800"
@@ -88,7 +124,11 @@ function Register() {
                 Accept our terms and privacy policy
               </label>
             </div>
-            <button className="cursor-pointer w-full h-8 uppercase text-lg font-medium text-blue-500 border border-gray-300 hover:bg-gray-50 rounded my-5">
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className="cursor-pointer w-full h-8 uppercase text-lg font-medium text-blue-500 border border-gray-300 hover:bg-gray-50 rounded my-5"
+            >
               Sign Up
             </button>
             <p className="text-sm text-gray-800">
