@@ -1,4 +1,4 @@
-import { HeadingSection } from "../components";
+import { HeadingSection, TableWrapper } from "../components";
 import { demoProducts } from "../utils/data";
 import MaxWidthWrapper from "../utils/MaxWidthWrapper";
 import { MdDelete } from "react-icons/md";
@@ -11,10 +11,10 @@ function Wishlist() {
       </HeadingSection>
       <div className="w-full min-h-[500px] flex justify-center bg-white">
         <MaxWidthWrapper className="flex justify-center p-10">
-          <table className="w-full mx-auto table-auto border-separate border-spacing-y-2">
+          <TableWrapper>
             <thead>
               <tr>
-                <th className="  py-2 ">No.</th>
+                <th className="px-4  py-2 ">No.</th>
                 <th className="px-4 py-2 ">Image</th>
                 <th className="px-4 py-2 ">Name</th>
                 <th className="px-4 py-2 ">Stock Status</th>
@@ -57,7 +57,7 @@ function Wishlist() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </TableWrapper>
         </MaxWidthWrapper>
       </div>
     </>

@@ -8,6 +8,11 @@ import BreadCrumb from "./BreadCrumb";
 import Filters from "./Filters";
 import AllProducts from "./AllProducts";
 import HeadingSection from "./HeadingSection";
+import AdminLayout from "./AdminLayout";
+import AdminSectionHeading from "./AdminSectionHeading";
+import TableWrapper from "./TableWrapper";
+import TableHeadingWrapper from "./TableHeadingWrapper";
+import AddNewButton from "./AddNewButton";
 
 export {
   Header,
@@ -19,5 +24,10 @@ export {
   BreadCrumb,
   Filters,
   AllProducts,
-  HeadingSection
+  HeadingSection,
+  AdminLayout,
+  AdminSectionHeading,
+  TableWrapper,
+  TableHeadingWrapper,
+  AddNewButton
 };
