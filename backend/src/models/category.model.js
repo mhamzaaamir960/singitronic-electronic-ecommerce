@@ -5,8 +5,12 @@ const categorySchema = new Schema({
     type: String,
     required: true,
   },
+  description: {
+    type: String,
+  },
   categoryImage: {
-    type: String, // upload on cloudinary
+    url: { type: String },
+    public_id: { type: String }, // upload on cloudinary
   },
 });
 

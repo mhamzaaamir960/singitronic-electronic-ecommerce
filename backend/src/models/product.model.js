@@ -22,7 +22,8 @@ const productSchema = new Schema({
     default: 5,
   },
   productImage: {
-    type: String,
+    url: { type: String },
+    public_id: { type: String },
   }, // upload on cloudinary before
   slug: {
     type: String,
