@@ -129,9 +129,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(
-      new ApiResponse(200, updateProduct, "Product updated successfully!")
-    );
+    .json(new ApiResponse(200, updateProduct, "Product updated successfully!"));
 });
 
 const deleteProduct = asyncHandler(async (req, res) => {
@@ -186,7 +184,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
   // get all products
   // return a response
 
-  const products = await Product.find();
+  const products = await Product.find().populate("categoryId");
   if (!products) {
     throw new ApiError(404, "Products not found!");
   }
