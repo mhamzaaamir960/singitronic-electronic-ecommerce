@@ -1,5 +1,7 @@
-import { Review } from "../models/review.model";
-import { ApiError, ApiResponse, asyncHandler } from "../utils";
+import { Review } from "../models/review.model.js";
+import { asyncHandler } from "../utils/AsyncHandler.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
 import { isValidObjectId } from "mongoose";
 
 const createReview = asyncHandler(async (req, res) => {

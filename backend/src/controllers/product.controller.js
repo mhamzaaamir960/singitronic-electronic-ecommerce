@@ -1,12 +1,12 @@
 import { isValidObjectId } from "mongoose";
-import { Product } from "../models/product.model";
+import { Product } from "../models/product.model.js";
+import { asyncHandler } from "../utils/AsyncHandler.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
 import {
-  ApiError,
-  ApiResponse,
-  asyncHandler,
-  removeImageFromCloudinary,
   uploadOnCloudinary,
-} from "../utils";
+  removeImageFromCloudinary,
+} from "../utils/cloudinary.js";
 
 const addProduct = asyncHandler(async (req, res) => {
   // get data from frontend

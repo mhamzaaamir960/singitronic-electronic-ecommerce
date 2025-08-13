@@ -1,15 +1,13 @@
-import express, { urlencoded } from "express";
+import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import {
-  cartRouter,
-  categoryRouter,
-  orderRouter,
-  productRouter,
-  reviewRouter,
-  userRouter,
-  wishlistRouter,
-} from "./routes";
+import userRouter from "./routes/user.routes.js";
+import categoryRouter from "./routes/category.routes.js";
+import productRouter from "./routes/product.routes.js";
+import wishlistRouter from "./routes/wishlist.routes.js";
+import cartRouter from "./routes/cart.routes.js";
+import reviewRouter from "./routes/review.routes.js";
+import orderRouter from "./routes/order.routes.js"
 
 export const app = express();
 

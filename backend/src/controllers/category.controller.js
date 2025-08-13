@@ -1,11 +1,11 @@
+import { asyncHandler } from "../utils/AsyncHandler.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
 import {
-  ApiError,
-  ApiResponse,
-  asyncHandler,
-  removeImageFromCloudinary,
   uploadOnCloudinary,
-} from "../utils";
-import { Category } from "../models/category.model";
+  removeImageFromCloudinary,
+} from "../utils/cloudinary.js";
+import { Category } from "../models/category.model.js";
 import { isValidObjectId } from "mongoose";
 
 const createCategory = asyncHandler(async (req, res) => {

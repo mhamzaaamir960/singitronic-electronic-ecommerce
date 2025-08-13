@@ -1,6 +1,8 @@
 import { isValidObjectId } from "mongoose";
-import { ApiError, ApiResponse, asyncHandler } from "../utils";
-import { Wishlist } from "../models/wishlist.model";
+import { asyncHandler } from "../utils/AsyncHandler.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
+import { Wishlist } from "../models/wishlist.model.js";
 
 const addProductInWishlist = asyncHandler(async (req, res) => {
   // get user id and validate it

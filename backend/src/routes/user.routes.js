@@ -6,7 +6,7 @@ import {
   logout,
   register,
   updatePassword,
-} from "../controllers/user.controller";
+} from "../controllers/user.controller.js";
 
 const router = Router();
 

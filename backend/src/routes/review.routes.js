@@ -5,7 +5,7 @@ import {
   getAllReviews,
   getUserReviewsById,
   updateReview,
-} from "../controllers/review.controller";
+} from "../controllers/review.controller.js";
 
 const router = Router();
 

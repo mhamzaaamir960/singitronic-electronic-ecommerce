@@ -1,6 +1,8 @@
 import { isValidObjectId } from "mongoose";
-import { ApiError, ApiResponse, asyncHandler } from "../utils";
-import { Cart } from "../models/cart.model";
+import { asyncHandler } from "../utils/AsyncHandler.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
+import { Cart } from "../models/cart.model.js";
 
 const addToCart = asyncHandler(async (req, res) => {
   // get user id and validate it
