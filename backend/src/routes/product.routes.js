@@ -6,14 +6,15 @@ import {
   getProduct,
   updateProduct,
 } from "../controllers/product.controller.js";
+import { isAdmin, verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.route("/").post(addProduct).get(getAllProducts);
+router.route("/").post(verifyJWT, isAdmin, addProduct).get(getAllProducts);
 router
   .route("/:productId")
   .get(getProduct)
-  .patch(updateProduct)
-  .delete(deleteProduct);
+  .patch(verifyJWT, isAdmin, updateProduct)
+  .delete(verifyJWT, isAdmin, deleteProduct);
 
 export default router;

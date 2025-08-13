@@ -7,14 +7,15 @@ import {
   register,
   updatePassword,
 } from "../controllers/user.controller.js";
+import { isAdmin, verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
 router.route("/register").post(register);
 router.route("/login").post(login);
-router.route("/logout").post(logout);
-router.route("/change-password").put(updatePassword);
+router.route("/logout").post(verifyJWT, logout);
+router.route("/change-password").put(verifyJWT, updatePassword);
 router.route("/user").get(getUser);
-router.route("/").get(getAllUsers);
+router.route("/").get(verifyJWT, isAdmin, getAllUsers);
 
 export default router;

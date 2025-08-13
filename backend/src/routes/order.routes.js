@@ -7,16 +7,19 @@ import {
   getOrdersByStatus,
   updateOrderStatus,
 } from "../controllers/order.controller.js";
+import { isAdmin, verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.route("/").post(createOrder).get(getAllOrders);
+router
+  .route("/")
+  .post(verifyJWT, createOrder)
+  .get(verifyJWT, isAdmin, getAllOrders);
 router
   .route("/order/:orderId")
-  .get(getOrderById)
-  .patch(updateOrderStatus)
-  .delete(deleteOrder);
-router.route('/status').get(getOrdersByStatus)
-
+  .get(verifyJWT, getOrderById)
+  .patch(verifyJWT, isAdmin, updateOrderStatus)
+  .delete(verifyJWT, isAdmin, deleteOrder);
+router.route("/status").get(verifyJWT, getOrdersByStatus);
 
 export default router;
