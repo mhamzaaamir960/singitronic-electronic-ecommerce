@@ -1,8 +1,9 @@
 import mongoose, { Schema } from "mongoose";
 
 const addressSchema = new Schema({
-  street: { type: String, required: true },
+  country: { type: String, required: true },
   city: { type: String, required: true },
+  street: { type: String, required: true },
   zip: { type: String, required: true },
 });
 
@@ -29,7 +30,7 @@ const orderSchema = new Schema(
       default: "PENDING",
     },
     totalAmount: {
-      type: String,
+      type: Number,
       required: true,
     },
     shippingAddress: {

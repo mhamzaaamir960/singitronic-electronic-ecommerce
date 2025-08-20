@@ -1,0 +1,65 @@
+enum Role {
+  "USER" = "user",
+  "ADMIN" = "admin",
+}
+
+interface Address {
+  country: string;
+  city: string;
+  street: string;
+  zip: string;
+}
+
+interface User {
+  _id?: string
+  fullName: string;
+  emailAddress: string;
+  role: Role;
+  phoneNumber?: number;
+  profileImage?: string;
+  address?: Address;
+}
+
+interface Product {
+  name: string;
+  description: string;
+  price: number;
+  rating: number;
+  productImage: string | File;
+  slug: string;
+  manufacturer: string;
+  categoryId: string;
+  inStock: boolean;
+}
+
+interface Category {
+  _id: string
+  name: string;
+  description?: string;
+  categoryImage?: string;
+}
+
+interface Wishlist {
+  user: User;
+  products: Product[];
+}
+
+interface Review {
+  user: User;
+  rating: number;
+  comment?: string;
+}
+
+interface Cart {
+  user: User;
+  items: Product[];
+}
+
+interface Order {
+  user: User;
+  items: Product[];
+  status: "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELED";
+  payment: "PENDING" | "PAID" | "REFUNDED";
+  totalAmount: number;
+  shippingAddress: Address;
+}

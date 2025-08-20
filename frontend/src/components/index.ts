@@ -13,6 +13,7 @@ import AdminSectionHeading from "./AdminSectionHeading";
 import TableWrapper from "./TableWrapper";
 import TableHeadingWrapper from "./TableHeadingWrapper";
 import AddNewButton from "./AddNewButton";
+import PopUp from "./PopUp";
 
 export {
   Header,
@@ -29,5 +30,6 @@ export {
   AdminSectionHeading,
   TableWrapper,
   TableHeadingWrapper,
-  AddNewButton
+  AddNewButton,
+  PopUp,
 };

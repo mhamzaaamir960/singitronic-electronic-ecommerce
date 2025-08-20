@@ -23,8 +23,7 @@ interface categoryMenuList {
 }
 
 interface RegisterUserType {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   emailAddress: string;
   password: string;
   confirmPassword: string;

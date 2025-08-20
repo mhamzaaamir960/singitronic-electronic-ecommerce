@@ -7,5 +7,17 @@ import Search from "./Search";
 import Wishlist from "./Wishlist";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
+import Profile from "./Profile";
 
-export { Home, Shop, SingleProduct, Register, Login, Search, Wishlist, Cart, Checkout };
+export {
+  Home,
+  Shop,
+  SingleProduct,
+  Register,
+  Login,
+  Search,
+  Wishlist,
+  Cart,
+  Checkout,
+  Profile,
+};

@@ -1,17 +1,18 @@
 import MaxWidthWrapper from "../utils/MaxWidthWrapper";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { HeadingSection } from "../components";
 import { useState, type ChangeEvent, type FormEvent } from "react";
+import toast from "react-hot-toast";
 
 function Register() {
   const [data, setData] = useState<RegisterUserType>({
-    firstName: "",
-    lastName: "",
+    fullName: "",
     emailAddress: "",
     password: "",
     confirmPassword: "",
   });
-
+  const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setData((prevData: RegisterUserType) => ({
@@ -20,9 +21,44 @@ function Register() {
     }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log(data);
+    try {
+      if (data.confirmPassword !== data.password) {
+        throw new Error("Confirm password is not matached to password!");
+      }
+      setLoading(true);
+      const response = await fetch("/api/v1/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+      const responseData = await response.json();
+      if (!response.ok) {
+        throw new Error(responseData.message as string);
+      }
+      console.log(responseData);
+      setLoading(false);
+      toast.success("User Registered Successfully!");
+      setData({
+        fullName: "",
+        emailAddress: "",
+        password: "",
+        confirmPassword: "",
+      });
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      toast.error(
+        error instanceof Error ? error.message : "Error: User not registered!"
+      );
+    }
   };
   return (
     <>
@@ -37,32 +73,17 @@ function Register() {
           <div className="max-w-[500px] w-full min-h-[500px] flex flex-col justify-center items-center gap-y-4 border border-gray-50 shadow rounded p-10 ">
             <div className="w-full flex flex-col gap-y-1">
               <label
-                htmlFor="firstName"
+                htmlFor="fullName"
                 className="text-lg font-medium text-gray-800"
               >
-                First Name
+                Full Name
               </label>
               <input
-                name="firstName"
-                id="firstName"
+                required
+                name="fullName"
+                id="fullName"
                 type="text"
-                value={data.firstName}
-                onChange={handleChange}
-                className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
-              />
-            </div>
-            <div className="w-full flex flex-col gap-y-1">
-              <label
-                htmlFor="lastName"
-                className="text-lg font-medium text-gray-800"
-              >
-                Last Name
-              </label>
-              <input
-                id="lastName"
-                name="lastName"
-                type="text"
-                value={data.lastName}
+                value={data.fullName}
                 onChange={handleChange}
                 className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
               />
@@ -75,9 +96,10 @@ function Register() {
                 Email Address
               </label>
               <input
+                required
                 id="emailAddress"
                 name="emailAddress"
-                type="text"
+                type="email"
                 value={data.emailAddress}
                 onChange={handleChange}
                 className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
@@ -91,6 +113,7 @@ function Register() {
                 Password
               </label>
               <input
+                required
                 id="password"
                 name="password"
                 type="password"
@@ -107,6 +130,7 @@ function Register() {
                 Confirm Password
               </label>
               <input
+                required
                 id="confirmPassword"
                 name="confirmPassword"
                 type="password"
@@ -127,9 +151,10 @@ function Register() {
             <button
               type="submit"
               onClick={handleSubmit}
+              disabled={loading}
               className="cursor-pointer w-full h-8 uppercase text-lg font-medium text-blue-500 border border-gray-300 hover:bg-gray-50 rounded my-5"
             >
-              Sign Up
+              {loading ? "Loading..." : "Sign Up"}
             </button>
             <p className="text-sm text-gray-800">
               Already have an account!{" "}

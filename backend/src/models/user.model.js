@@ -12,6 +12,7 @@ const userSchema = new Schema(
     emailAddress: {
       type: String,
       required: true,
+      unique: true,
     },
     password: {
       type: String,
@@ -31,8 +32,9 @@ const userSchema = new Schema(
     },
     // upload on cloudinary before
     address: {
-      street: String,
+      country: String,
       city: String,
+      street: String,
       zip: String,
     },
     refreshToken: {
@@ -43,10 +45,9 @@ const userSchema = new Schema(
 );
 
 userSchema.pre("save", async function (next) {
-  if (!this.isModified(this.password)) {
-    this.password = await bcrypt.hash(this.password, 10);
-    next();
-  }
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
 
 userSchema.methods.isPasswordCorrect = async function (password) {

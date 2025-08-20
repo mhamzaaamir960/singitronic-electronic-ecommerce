@@ -4,6 +4,7 @@ import {
   Checkout,
   Home,
   Login,
+  Profile,
   Register,
   Search,
   Shop,
@@ -13,8 +14,18 @@ import {
 import { Footer, Header } from "./components";
 import DashboardSidebar from "./components/DashboardSidebar";
 import { Categories, Dashboard, Orders, Products, Users } from "./pages/Admin";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "./store/store";
+import { fetchUser } from "./store/slices/authSlice";
+import { useEffect } from "react";
+import ProtectedRoutes from "./utils/ProtectedRoutes";
+import AdminRoutes from "./utils/AdminRoutes";
 
 function App() {
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
   return (
     <Routes>
       <Route
@@ -37,13 +48,23 @@ function App() {
         <Route path="cart" element={<Cart />} />
         <Route path="cart/checkout" element={<Checkout />} />
         <Route
+          path="/profile"
+          element={
+            <ProtectedRoutes>
+              <Profile />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
           path="/admin"
           element={
-            <>
-              <DashboardSidebar>
-                <Outlet />
-              </DashboardSidebar>
-            </>
+            <ProtectedRoutes>
+              {/* <AdminRoutes> */}
+                <DashboardSidebar>
+                  <Outlet />
+                </DashboardSidebar>
+              {/* </AdminRoutes> */}
+            </ProtectedRoutes>
           }
         >
           <Route index element={<Dashboard />} />

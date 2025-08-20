@@ -33,7 +33,8 @@ const register = asyncHandler(async (req, res) => {
   // return a response
 
   const { fullName, emailAddress, password, phoneNumber, address } = req.body;
-  const { street, city, zip } = address;
+  // const { street, city, zip } = address;
+  console.log(fullName);
 
   if ([fullName, emailAddress, password].some((field) => field.trim() === "")) {
     throw new ApiError(
@@ -59,15 +60,8 @@ const register = asyncHandler(async (req, res) => {
     emailAddress: emailAddress,
     password: password,
     phoneNumber: phoneNumber,
-    profileImage: {
-      url: profileImage.url || "",
-      public_id: profileImage.public_id || "",
-    },
-    address: {
-      street: street,
-      city: city,
-      zip: zip,
-    },
+
+    address: address,
   });
 
   return res
@@ -83,18 +77,18 @@ const login = asyncHandler(async (req, res) => {
   // generate access and refresh tokens
   // store cookies and return response
 
-  const { identifier, password } = req.body;
-  if (!identifier || !password) {
+  const { emailAddress, password } = req.body;
+  if (!emailAddress || !password) {
     throw new ApiError(400, "All fields are required!");
   }
 
-  const user = await User.findOne({ emailAddress: identifier });
+  const user = await User.findOne({ emailAddress: emailAddress });
   if (!user) {
     throw new ApiError(404, "User not found!");
   }
-
-  const isPasswordCorrect = await user.isPasswordCorrect(password);
-  if (!isPasswordCorrect) {
+  const isPasswordValid = await user.isPasswordCorrect(password);
+  console.log(isPasswordValid);
+  if (!isPasswordValid) {
     throw new ApiError(401, "Invalid Password!");
   }
 
@@ -108,6 +102,8 @@ const login = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: true,
+    sameSite: "lax",
+    maxAge: 60 * 24 * 60 * 60 * 1000,
   };
 
   return res
@@ -146,6 +142,8 @@ const logout = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: true,
+    sameSite: "lax",
+    maxAge: 60 * 24 * 60 * 60 * 1000,
   };
 
   return res
@@ -159,7 +157,9 @@ const getUser = asyncHandler(async (req, res) => {
   // get user id
   // find user if not throw error
   // return a response
-  const userId = req.user._id;
+
+  console.log(req.session);
+  const userId = req.user?._id;
   if (!isValidObjectId(userId)) {
     throw new ApiError(401, "Un-authorized request!");
   }

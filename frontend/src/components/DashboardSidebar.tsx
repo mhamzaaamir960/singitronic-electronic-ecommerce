@@ -46,7 +46,7 @@ const sidebarLinks: SidebarLinksType[] = [
 
 function DashboardSidebar({ children }: { children: React.ReactNode }) {
   return (
-    <div className="w-full max-h-[900px] h-full flex justify-center bg-white">
+    <div className="w-full max-h-[900px] h-full flex justify-center bg-white ">
       <MaxWidthWrapper className="flex justify-start mt-40 flex gap-x-10">
         <ul className="w-[300px] max-h-fit bg-blue-500 h-full flex flex-col gap-y-5 py-10  rounded-b-lg ">
           {sidebarLinks.map((link: SidebarLinksType) => (

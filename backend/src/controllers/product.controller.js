@@ -59,7 +59,7 @@ const addProduct = asyncHandler(async (req, res) => {
       public_id: productImage.public_id || "",
     },
   });
-
+  
   return res
     .status(200)
     .json(new ApiResponse(200, newProduct, "New Product added successfully!"));
