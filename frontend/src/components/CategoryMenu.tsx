@@ -1,8 +1,17 @@
-import { categoryMenuList } from "../utils/data";
+import { useDispatch, useSelector } from "react-redux";
 import MaxWidthWrapper from "../utils/MaxWidthWrapper";
 import CategoryItem from "./CategoryItem";
+import type { AppDispatch, RootState } from "../store/store";
+import { useEffect } from "react";
+import { fetchCategories } from "../store/slices/categorySlice";
 
 function CategoryMenu() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { categories } = useSelector((state: RootState) => state.categorySlice);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch, categories]);
   return (
     <div className="h-[500px] flex justify-center bg-blue-500">
       <MaxWidthWrapper className="flex flex-col items-center justify-center gap-y-10">
@@ -10,16 +19,21 @@ function CategoryMenu() {
           Browse Categories
         </h2>
         <div className="flex flex-wrap justify-center items-center gap-5">
-          {categoryMenuList.map((item: categoryMenuList) => (
-            <CategoryItem href={item.href} key={item.id} title={item.title} >
-              <img
-                src={item.src}
-                alt={`${item.title} image`}
-                width={48}
-                height={48}
-              />
-            </CategoryItem>
-          ))}
+          {categories &&
+            categories.length > 0 &&
+            categories.map((category: Category) => {
+              const image = category.categoryImage as CategoryImage;
+              return (
+                <CategoryItem key={category._id} title={category.name}>
+                  <img
+                    src={image.url}
+                    alt={`${category.name} image`}
+                    width={48}
+                    height={48}
+                  />
+                </CategoryItem>
+              );
+            })}
         </div>
       </MaxWidthWrapper>
     </div>

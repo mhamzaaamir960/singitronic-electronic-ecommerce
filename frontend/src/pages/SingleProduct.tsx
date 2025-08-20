@@ -1,25 +1,38 @@
 import { AiFillStar } from "react-icons/ai";
 import MaxWidthWrapper from "../utils/MaxWidthWrapper";
-import { demoProducts } from "../utils/data";
 import { FaCheck, FaHeart } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LuMinus, LuPlus } from "react-icons/lu";
 import {
   FaSquareFacebook,
   FaSquarePinterest,
   FaSquareXTwitter,
 } from "react-icons/fa6";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../store/store";
+import { getSingleProduct } from "../store/slices/productSlice";
 
 function SingleProduct() {
-  const product = demoProducts[10];
+  const { productId } = useParams();
+  const { product } = useSelector((state: RootState) => state.productsSlice);
+  const image = product?.productImage as CategoryImage;
+  const dispatch = useDispatch<AppDispatch>();
+
   const [counter, setCounter] = useState(0);
   const [wishlist, setWishlist] = useState(false);
+
+  useEffect(() => {
+    if (productId) {
+      dispatch(getSingleProduct(productId as string));
+    }
+  }, [dispatch, productId]);
   return (
     <div className="w-full min-h-[900px] flex justify-center items-center bg-white mt-20">
       <MaxWidthWrapper className="flex justify-center items-center gap-14 ">
         <img
-          src={product.mainImage}
-          alt={product.title}
+          src={image?.url}
+          alt={product?.name}
           width={550}
           className="shadow"
         />
@@ -32,8 +45,8 @@ function SingleProduct() {
             <AiFillStar className="text-yellow-500 text-xl" />
             (3 Reviews)
           </div>
-          <h3 className="text-3xl font-medium mt-5 mb-3">{product.title}</h3>
-          <p className="text-lg font-semibold">${product.price}</p>
+          <h3 className="text-3xl font-medium mt-5 mb-3">{product?.name}</h3>
+          <p className="text-lg font-semibold">${product?.price}</p>
           <div className="flex items-center gap-x-2 my-3 text-xl ">
             <p className="font-medium">Avaiability: </p>
             <p className="text-green-400 text-base flex items-center gap-x-2">

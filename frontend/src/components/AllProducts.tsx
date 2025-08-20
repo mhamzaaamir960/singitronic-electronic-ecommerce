@@ -1,12 +1,21 @@
-import { demoProducts } from "../utils/data";
+import { useDispatch, useSelector } from "react-redux";
 import Product from "./Product";
 import SortBy from "./SortBy";
 import {
   MdOutlineKeyboardDoubleArrowLeft,
   MdOutlineKeyboardDoubleArrowRight,
 } from "react-icons/md";
+import type { AppDispatch, RootState } from "../store/store";
+import { useEffect } from "react";
+import { fetchProducts } from "../store/slices/productSlice";
 
 function AllProducts() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { products } = useSelector((state: RootState) => state.productsSlice);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch, products]);
   return (
     <div className=" w-full flex flex-col gap-y-5 ">
       <div className="flex justify-between items-center">
@@ -20,21 +29,29 @@ function AllProducts() {
       </div>
       <div className="w-full h-0.5 bg-gray-300/50 rounded-full my-3" />
       <div className="flex flex-wrap justify-between gap-5 p-5">
-        {demoProducts.map((product: ProductType) => (
-          <Product
-            key={product.id}
-            price={product.price}
-            src={product.mainImage}
-            title={product.title}
-            color="blue"
-          />
-        ))}
+        {products &&
+          products.length > 0 &&
+          products.map((product: Product) => {
+            const image = product.productImage as CategoryImage;
+            return (
+              <Product
+                key={product._id}
+                price={product.price}
+                src={image.url}
+                title={product.name}
+                _id={product._id!}
+                color="blue"
+              />
+            );
+          })}
       </div>
       <div className=" w-full h-[50px] flex justify-center items-center mt-5 ">
         <button className="h-full cursor-pointer bg-blue-500/95 hover:bg-blue-500/100  px-3 rounded-l-lg">
           <MdOutlineKeyboardDoubleArrowLeft className="text-2xl text-white " />
         </button>
-        <p className="h-full bg-blue-500/95 text-xl font-semibold text-white border-x border-white flex justify-center items-center px-5">1</p> 
+        <p className="h-full bg-blue-500/95 text-xl font-semibold text-white border-x border-white flex justify-center items-center px-5">
+          1
+        </p>
         <button className="h-full cursor-pointer bg-blue-500/95 hover:bg-blue-500/100 px-3 rounded-r-lg">
           <MdOutlineKeyboardDoubleArrowRight className="text-2xl text-white" />
         </button>

@@ -4,8 +4,8 @@ import type { RootState } from "../store/store";
 import { Navigate } from "react-router-dom";
 
 function AdminRoutes({ children }: { children: React.ReactNode }) {
-  const user = useSelector((state: RootState) => state.authSlice.user);
-  if (user?.role !== "admin") {
+  const {user, loading} = useSelector((state: RootState) => state.authSlice);
+  if (user?.role !== "admin" && !loading) {
     return <Navigate to="/" replace />;
   }
   return children;

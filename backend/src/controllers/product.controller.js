@@ -26,6 +26,7 @@ const addProduct = asyncHandler(async (req, res) => {
     categoryId,
     inStock = false,
   } = req.body;
+  console.log(name);
 
   if (
     [name, description, price, rating, slug, manufacturer, categoryId].some(
@@ -39,7 +40,7 @@ const addProduct = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid category id!");
   }
 
-  const imageLocalPath = await req.files?.productImage[0]?.path;
+  const imageLocalPath = req.file?.path;
   if (!imageLocalPath) {
     throw new ApiError(400, "Product image is required!");
   }
@@ -48,8 +49,8 @@ const addProduct = asyncHandler(async (req, res) => {
   const newProduct = await Product.create({
     name: name,
     description: description,
-    price: price,
-    rating: rating,
+    price: Number(price),
+    rating: Number(rating),
     slug: slug,
     manufacturer: manufacturer,
     categoryId: categoryId,
@@ -59,7 +60,7 @@ const addProduct = asyncHandler(async (req, res) => {
       public_id: productImage.public_id || "",
     },
   });
-  
+
   return res
     .status(200)
     .json(new ApiResponse(200, newProduct, "New Product added successfully!"));

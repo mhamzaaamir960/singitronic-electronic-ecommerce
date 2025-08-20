@@ -40,7 +40,7 @@ function App() {
       >
         <Route index element={<Home />} />
         <Route path="shop" element={<Shop />} />
-        <Route path="product" element={<SingleProduct />} />
+        <Route path="shop/:productId" element={<SingleProduct />} />
         <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
         <Route path="search" element={<Search />} />
@@ -59,11 +59,11 @@ function App() {
           path="/admin"
           element={
             <ProtectedRoutes>
-              {/* <AdminRoutes> */}
+              <AdminRoutes>
                 <DashboardSidebar>
                   <Outlet />
                 </DashboardSidebar>
-              {/* </AdminRoutes> */}
+              </AdminRoutes>
             </ProtectedRoutes>
           }
         >

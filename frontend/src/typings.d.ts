@@ -21,22 +21,27 @@ interface User {
 }
 
 interface Product {
+  _id?: string;
   name: string;
   description: string;
   price: number;
   rating: number;
-  productImage: string | File;
+  productImage: string | File | CategoryImage;
   slug: string;
   manufacturer: string;
   categoryId: string;
   inStock: boolean;
 }
 
+interface CategoryImage {
+  url: string;
+  public_id;
+}
 interface Category {
-  _id: string
+  _id?: string
   name: string;
   description?: string;
-  categoryImage?: string;
+  categoryImage?: string | File | CategoryImage;
 }
 
 interface Wishlist {

@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { upload } from "../middlewares/multer.middleware.js";
 import {
   createCategory,
   deleteCategory,
@@ -11,7 +12,7 @@ const router = Router();
 
 router
   .route("/")
-  .post(verifyJWT, isAdmin, createCategory)
+  .post(verifyJWT,isAdmin, upload.single("categoryImage"), createCategory)
   .get(getAllCategories);
 router
   .route("/:categoryId")

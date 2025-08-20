@@ -21,12 +21,11 @@ const createCategory = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Category name is required!");
   }
 
-  const imageLocalPath = req.files?.categoryImage[0]?.path;
+  const imageLocalPath = req.file?.path;
   let categoryImage;
   if (imageLocalPath) {
     categoryImage = await uploadOnCloudinary(imageLocalPath);
   }
-
   const newCategory = await Category.create({
     name: name,
     description: description,
@@ -121,7 +120,9 @@ const getAllCategories = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(200, categories, "All categories fetched successfully!");
+    .json(
+      new ApiResponse(200, categories, "All categories fetched successfully!")
+    );
 });
 
 export { createCategory, updateCategory, deleteCategory, getAllCategories };
