@@ -4,13 +4,21 @@ import { Link } from "react-router-dom";
 import SearchInput from "./SearchInput";
 import { FaHeart } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
-import { useSelector } from "react-redux";
-import type { RootState } from "../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../store/store";
+import { useEffect } from "react";
+import { getTotalCartItems } from "../store/slices/cartSlice";
 
 function Header() {
+  const dispatch = useDispatch<AppDispatch>();
   const { isAuthenticated } = useSelector(
     (state: RootState) => state.authSlice
   );
+  const { totalCartItems } = useSelector((state: RootState) => state.cartSlice);
+
+  useEffect(() => {
+    dispatch(getTotalCartItems());
+  }, [dispatch]);
   return (
     <header className="fixed top-0 w-full flex flex-col items-center bg-white">
       <HeaderTop />
@@ -38,7 +46,7 @@ function Header() {
             <Link to={"/cart"}>
               <FaCartShopping className="text-black text-3xl" />
               <span className="absolute -right-4 -top-4 w-[20px] h-[20px] rounded-full bg-blue-500 text-white text-sm font-semibold flex justify-center items-center ">
-                0
+                {totalCartItems}
               </span>
             </Link>
           </li>

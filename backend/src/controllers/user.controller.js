@@ -34,7 +34,6 @@ const register = asyncHandler(async (req, res) => {
 
   const { fullName, emailAddress, password, phoneNumber, address } = req.body;
   // const { street, city, zip } = address;
-  console.log(fullName);
 
   if ([fullName, emailAddress, password].some((field) => field.trim() === "")) {
     throw new ApiError(
@@ -228,5 +227,19 @@ const updatePassword = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, {}, "Password updated successfully!"));
 });
+
+const updateUserDetails = asyncHandler(async (req, res) => {
+  // get user id and validate it
+  // get data from frontend and validate neccessary data
+
+  const userId = req.user._id;
+  if (!isValidObjectId(userId)) {
+    throw new ApiError(401, "Invalid User Id!");
+  }
+
+
+});
+
+
 
 export { register, login, logout, getUser, getAllUsers, updatePassword };

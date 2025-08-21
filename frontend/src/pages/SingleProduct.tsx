@@ -12,21 +12,49 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../store/store";
 import { getSingleProduct } from "../store/slices/productSlice";
+import {
+  addToCart,
+  decreasedQuantity,
+  getItemQuantity,
+  getTotalCartItems,
+  incrementQuantity,
+} from "../store/slices/cartSlice";
 
 function SingleProduct() {
   const { productId } = useParams();
   const { product } = useSelector((state: RootState) => state.productsSlice);
+  const { itemQuantity } = useSelector((state: RootState) => state.cartSlice);
   const image = product?.productImage as CategoryImage;
   const dispatch = useDispatch<AppDispatch>();
 
-  const [counter, setCounter] = useState(0);
   const [wishlist, setWishlist] = useState(false);
+
+  const handleAddToCart = async () => {
+    await dispatch(addToCart(productId as string));
+    await dispatch(getItemQuantity(productId as string));
+    await dispatch(getTotalCartItems());
+  };
+
+  const handleIncrement = async () => {
+    await dispatch(incrementQuantity(productId as string));
+    await dispatch(getItemQuantity(productId as string));
+  };
+
+  const handleDecrement = async () => {
+    await dispatch(decreasedQuantity(productId as string));
+    await dispatch(getItemQuantity(productId as string));
+  };
 
   useEffect(() => {
     if (productId) {
       dispatch(getSingleProduct(productId as string));
     }
   }, [dispatch, productId]);
+
+  useEffect(() => {
+    dispatch(getItemQuantity(productId as string));
+  }, [dispatch, productId]);
+
   return (
     <div className="w-full min-h-[900px] flex justify-center items-center bg-white mt-20">
       <MaxWidthWrapper className="flex justify-center items-center gap-14 ">
@@ -57,8 +85,9 @@ function SingleProduct() {
             <p className="text-xl font-medium">Quantity: </p>
             <div className="flex items-center gap-x-1">
               <button
-                onClick={() => setCounter(counter - 1)}
-                className="h-8 px-2 cursor-pointer border border-gray-300 hover:bg-gray-50 "
+                disabled={itemQuantity < 2}
+                onClick={handleDecrement}
+                className="disabled:bg-gray-100 h-8 px-2 cursor-pointer border border-gray-300 hover:bg-gray-50 "
               >
                 <LuMinus className="text-xl text-gray-800" />
               </button>
@@ -66,10 +95,10 @@ function SingleProduct() {
                 type="text"
                 disabled
                 className="h-8 text-md max-w-[70px] text-gray-800 border border-gray-300 px-1"
-                value={counter}
+                value={itemQuantity}
               />
               <button
-                onClick={() => setCounter(counter + 1)}
+                onClick={handleIncrement}
                 className="h-8 px-2  cursor-pointer border border-gray-300 hover:bg-gray-50"
               >
                 <LuPlus className="text-lg text-gray-800" />
@@ -77,7 +106,10 @@ function SingleProduct() {
             </div>
           </div>
           <div className="flex gap-x-5 my-5">
-            <button className="uppercase text-blue-500 text-lg border border-gray-300 hover:bg-gray-50 px-10 py-1 rounded-lg cursor-pointer">
+            <button
+              onClick={handleAddToCart}
+              className="uppercase text-blue-500 text-lg border border-gray-300 hover:bg-gray-50 px-10 py-1 rounded-lg cursor-pointer"
+            >
               Add to Cart
             </button>
             <button className="uppercase text-white text-lg bg-blue-500 hover:bg-blue-500/90 px-12 py-1 rounded-lg cursor-pointer  ">

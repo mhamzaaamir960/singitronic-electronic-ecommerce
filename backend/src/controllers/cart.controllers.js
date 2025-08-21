@@ -21,9 +21,21 @@ const addToCart = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid Product Id!");
   }
 
+  const cart = await Cart.findOne({
+    user: userId,
+    "items.productId": productId,
+  });
+
+  if (cart) {
+    throw new ApiError(400, "Product already in cart!");
+  }
+
   await Cart.findOneAndUpdate(
-    { user: userId, "items.product": { $ne: productId } },
-    { $push: { items: { product: productId, quantity: 1 } } },
+    { user: userId },
+    {
+      $push: { items: { productId: productId, quantity: 1 } },
+      $setOnInsert: { user: userId },
+    },
     { new: true, upsert: true }
   );
 
@@ -46,21 +58,17 @@ const removeFromCart = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid Product Id!");
   }
 
-  const updatedCart = await Cart.findOneAndUpdate(
-    { user: userId },
-    { $pull: { items: { product: productId } } },
+  await Cart.findOneAndUpdate(
+    { user: userId},
+    { $pull: { items: {productId : productId} } },
     { new: true }
   );
 
-  if (updatedCart && updatedCart.items.length === 0) {
-    await updatedCart.deleteOne({ _id: updatedCart._id });
-  }
-
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "Item is removed from cart successfully!"));
+    .json(new ApiResponse(200, {}, "Item removed from cart successfully!"));
 });
-const updateCartQuantity = asyncHandler(async (req, res) => {
+const incrementQuantity = asyncHandler(async (req, res) => {
   // get usedId and validate it
   // get productid and validate it
   // get quantity from frontend
@@ -78,28 +86,85 @@ const updateCartQuantity = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid Product Id!");
   }
 
-  const { itemQuantity } = req.body;
-  if (typeof itemQuantity !== "number") {
-    throw new ApiError(400, "Quantity number is required!");
+  const product = await Cart.findOne({
+    user: userId,
+    "items.productId": productId,
+  });
+
+  if (!product) {
+    throw new ApiError(
+      404,
+      "Please add to cart before then increase quantity!"
+    );
   }
 
+  await Cart.findOneAndUpdate(
+    { user: userId, "items.productId": productId },
+    { $inc: { "items.$.quantity": 1 } },
+    { new: true }
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Quantity increased successfully!"));
+});
+const decrementQuantity = asyncHandler(async (req, res) => {
+  // get user id and validate it
+  // get productId and validate it
+  // find the product in cart and throw error in case not exits in cart
+  // find and update the quantity of product
+  // return a response
+
+  const userId = req.user._id;
+  if (!isValidObjectId(userId)) {
+    throw new ApiError(401, "Invalid User Id!");
+  }
+
+  const { productId } = req.params;
+  if (!isValidObjectId(productId)) {
+    throw new ApiError(401, "Invalid Product Id!");
+  }
+
+  await Cart.findOneAndUpdate(
+    {
+      user: userId,
+      "items.productId": productId,
+      "items.quantity": { $gt: 1 },
+    },
+    { $inc: { "items.$.quantity": -1 } },
+    { new: true }
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Quantity decreased successfully!"));
+});
+const getSingleProductQuantity = asyncHandler(async (req, res) => {
+  // get userid and product and validate both
+  // get the item quantity
+  // return a response
+
+  const userId = req.user._id;
+  if (!isValidObjectId(userId)) {
+    throw new ApiError(401, "Invalid User Id!");
+  }
+  const { productId } = req.params;
+  if (!isValidObjectId(productId)) {
+    throw new ApiError(401, "Invalid Product Id!");
+  }
   const cart = await Cart.findOne({ user: userId });
   if (!cart) {
     throw new ApiError(404, "Cart is empty!");
   }
 
-  const itemIndex = cart.items.findIndex(
-    (item) => item.product.toString() === productId
-  );
-  if (itemIndex === -1) {
-    throw new ApiError(404, "Item not found in cart!");
-  }
+  const item = cart.items.find((i) => i.productId.toString() === productId);
+  const quantity = item ? item.quantity : 0;
 
-  cart.items[itemIndex].quantity += itemQuantity;
-  if (cart.items[itemIndex].quantity < 1) {
-    cart.items.splice(itemIndex, 1);
-  }
-  await cart.save();
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, quantity, "Product Quantity fetched successfully!")
+    );
 });
 const clearCart = asyncHandler(async (req, res) => {
   // get user id and validate it
@@ -128,7 +193,9 @@ const getCartItemsByUserId = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid User Id!");
   }
 
-  const cartItems = await Cart.find({ user: userId }).populate("items");
+  const cartItems = await Cart.find({ user: userId }).populate(
+    "items.productId"
+  );
   if (cartItems.length === 0) {
     throw new ApiError(404, "Cart is empty!");
   }
@@ -138,10 +205,34 @@ const getCartItemsByUserId = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, cartItems, "Cart items fetched successfully!"));
 });
 
+const totalCartItems = asyncHandler(async (req, res) => {
+  // get user id and validate
+  // find the cart and check exists
+  // count the cart items
+  //  return a response
+
+  const userId = req.user._id;
+  if (!isValidObjectId(userId)) {
+    throw new ApiError(401, "Invalid User Id!");
+  }
+
+  const cart = await Cart.findOne({ user: userId });
+  const itemsCount = cart.items.length;
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, itemsCount, "Items counts fetched successfully!")
+    );
+});
+
 export {
   addToCart,
-  updateCartQuantity,
+  incrementQuantity,
+  decrementQuantity,
+  getSingleProductQuantity,
   removeFromCart,
   clearCart,
   getCartItemsByUserId,
+  totalCartItems,
 };

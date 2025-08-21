@@ -11,7 +11,7 @@ function CategoryMenu() {
 
   useEffect(() => {
     dispatch(fetchCategories());
-  }, [dispatch, categories]);
+  }, [dispatch]);
   return (
     <div className="h-[500px] flex justify-center bg-blue-500">
       <MaxWidthWrapper className="flex flex-col items-center justify-center gap-y-10">

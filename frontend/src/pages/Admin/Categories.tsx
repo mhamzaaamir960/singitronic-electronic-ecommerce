@@ -32,6 +32,7 @@ function Categories() {
     description: "",
     categoryImage: "",
   });
+  const image = data.categoryImage as CategoryImage;
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleChange = (
@@ -149,8 +150,8 @@ function Categories() {
           {data.categoryImage ? (
             <img
               src={
-                data.categoryImage?.url
-                  ? (data.categoryImage?.url as string)
+                image.url
+                  ? image.url
                   : URL.createObjectURL(data.categoryImage as File)
               }
               alt={`${data.name} image`}

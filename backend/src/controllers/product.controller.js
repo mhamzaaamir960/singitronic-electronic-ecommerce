@@ -26,7 +26,6 @@ const addProduct = asyncHandler(async (req, res) => {
     categoryId,
     inStock = false,
   } = req.body;
-  console.log(name);
 
   if (
     [name, description, price, rating, slug, manufacturer, categoryId].some(

@@ -10,7 +10,7 @@ function FeaturedProducts() {
   const { products } = useSelector((state: RootState) => state.productsSlice);
   useEffect(() => {
     dispatch(fetchProducts());
-  }, [dispatch, products]);
+  }, [dispatch]);
   return (
     <div className="w-full min-h-[500px] flex justify-center bg-blue-500 border-t-4 border-t-white py-20">
       <MaxWidthWrapper className="flex flex-col justify-center items-center gap-y-20">

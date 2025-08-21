@@ -56,7 +56,6 @@ interface Review {
 }
 
 interface Cart {
-  user: User;
   items: Product[];
 }
 

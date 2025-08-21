@@ -84,7 +84,38 @@ const removeProductFromWishlist = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "Product removed from wishlist successfully!"));
+    .json(
+      new ApiResponse(200, {}, "Product removed from wishlist successfully!")
+    );
+});
+
+const toggleProductWishlist = asyncHandler(async (req, res) => {
+  // get user id and validate it
+  // get product id and validate it
+  // check product already exists other wise add in wishlist
+  const userId = req.user._id;
+  if (!isValidObjectId(userId)) {
+    throw new ApiError(401, "Invalid User Id!");
+  }
+  const { productId } = req.params;
+  if (!isValidObjectId(productId)) {
+    throw new ApiError(401, "Invalid Product Id!");
+  }
+
+  const wishlist = await Wishlist.findOne({ user: userId });
+  const itemIndex = wishlist.products.findIndex(
+    (item) => item._id.toString() === productId
+  );
+  let message;
+  if (itemIndex === -1) {
+    wishlist.products.push(productId);
+    message = "Item added in wishlist successfully!";
+  } else {
+    wishlist.products.splice(itemIndex, 1);
+    message = "Item removed from wishlist successfully!";
+  }
+  await wishlist.save();
+  return res.status(200).json(new ApiResponse(200, {}, ""));
 });
 
 const getAllWishlistProductsByUserId = asyncHandler(async (req, res) => {
@@ -114,5 +145,6 @@ const getAllWishlistProductsByUserId = asyncHandler(async (req, res) => {
 export {
   addProductInWishlist,
   removeProductFromWishlist,
+  toggleProductWishlist,
   getAllWishlistProductsByUserId,
 };
