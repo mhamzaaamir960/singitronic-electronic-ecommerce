@@ -1,7 +1,7 @@
 import { AiFillStar } from "react-icons/ai";
 import MaxWidthWrapper from "../utils/MaxWidthWrapper";
 import { FaCheck, FaHeart } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { LuMinus, LuPlus } from "react-icons/lu";
 import {
   FaSquareFacebook,
@@ -19,15 +19,22 @@ import {
   getTotalCartItems,
   incrementQuantity,
 } from "../store/slices/cartSlice";
+import {
+  checkItemInWishlist,
+  fetchWishlist,
+  toogleItemWishlit,
+} from "../store/slices/wishlistSlice";
 
 function SingleProduct() {
   const { productId } = useParams();
   const { product } = useSelector((state: RootState) => state.productsSlice);
   const { itemQuantity } = useSelector((state: RootState) => state.cartSlice);
+  const { isItemInWishlist } = useSelector(
+    (state: RootState) => state.wishlistSlice
+  );
+
   const image = product?.productImage as CategoryImage;
   const dispatch = useDispatch<AppDispatch>();
-
-  const [wishlist, setWishlist] = useState(false);
 
   const handleAddToCart = async () => {
     await dispatch(addToCart(productId as string));
@@ -45,14 +52,19 @@ function SingleProduct() {
     await dispatch(getItemQuantity(productId as string));
   };
 
+  const handleWishlistClick = async () => {
+    await dispatch(toogleItemWishlit(productId as string));
+    await dispatch(fetchWishlist());
+    await dispatch(checkItemInWishlist(productId as string));
+  };
+
   useEffect(() => {
     if (productId) {
       dispatch(getSingleProduct(productId as string));
+      dispatch(getItemQuantity(productId as string));
+      dispatch(fetchWishlist());
+      dispatch(checkItemInWishlist(productId as string));
     }
-  }, [dispatch, productId]);
-
-  useEffect(() => {
-    dispatch(getItemQuantity(productId as string));
   }, [dispatch, productId]);
 
   return (
@@ -117,10 +129,10 @@ function SingleProduct() {
             </button>
           </div>
           <div
-            onClick={() => setWishlist(!wishlist)}
+            onClick={handleWishlistClick}
             className="cursor-pointer select-none flex items-center gap-x-2 "
           >
-            {wishlist ? (
+            {isItemInWishlist ? (
               <FaHeart id="wishlist" className="text-red-500" />
             ) : (
               <FaHeart id="wishlist" />

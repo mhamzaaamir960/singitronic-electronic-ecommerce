@@ -64,23 +64,23 @@ const removeProductFromWishlist = asyncHandler(async (req, res) => {
   const wishlist = await Wishlist.findOne({ user: userId });
 
   // first way to remove item using mongodb operators
-  const result = await wishlist.updateOne(
-    { user: userId },
-    { $pull: { products: productId } },
-    { new: true }
-  );
+  // const result = await wishlist.updateOne(
+  //   { user: userId },
+  //   { $pull: { products: productId } },
+  //   { new: true }
+  // );
 
-  if (!result) {
-    throw new ApiError(404, "Product not found in wishlist!");
-  }
-
-  // second way to remove item fetch and then remove get index and splice
-  // const productIndex = wishlist.products.indexOf(productId);
-  // if (productIndex === -1) {
+  // if (!result) {
   //   throw new ApiError(404, "Product not found in wishlist!");
   // }
-  // wishlist.products.splice(productIndex, 1);
-  // await wishlist.save();
+
+  // second way to remove item fetch and then remove get index and splice
+  const productIndex = wishlist.products.indexOf(productId);
+  if (productIndex === -1) {
+    throw new ApiError(404, "Product not found in wishlist!");
+  }
+  wishlist.products.splice(productIndex, 1);
+  await wishlist.save();
 
   return res
     .status(200)
@@ -101,21 +101,28 @@ const toggleProductWishlist = asyncHandler(async (req, res) => {
   if (!isValidObjectId(productId)) {
     throw new ApiError(401, "Invalid Product Id!");
   }
-
   const wishlist = await Wishlist.findOne({ user: userId });
-  const itemIndex = wishlist.products.findIndex(
-    (item) => item._id.toString() === productId
-  );
   let message;
-  if (itemIndex === -1) {
-    wishlist.products.push(productId);
+  if (!wishlist) {
+    await Wishlist.create({
+      user: userId,
+      products: [productId],
+    });
     message = "Item added in wishlist successfully!";
   } else {
-    wishlist.products.splice(itemIndex, 1);
-    message = "Item removed from wishlist successfully!";
+    const itemIndex = wishlist.products.findIndex(
+      (item) => item._id.toString() === productId
+    );
+    if (itemIndex === -1) {
+      wishlist.products.push(productId);
+      message = "Item added in wishlist successfully!";
+    } else {
+      wishlist.products.splice(itemIndex, 1);
+      message = "Item removed from wishlist successfully!";
+    }
+    await wishlist.save();
   }
-  await wishlist.save();
-  return res.status(200).json(new ApiResponse(200, {}, ""));
+  return res.status(200).json(new ApiResponse(200, {}, message));
 });
 
 const getAllWishlistProductsByUserId = asyncHandler(async (req, res) => {
@@ -131,15 +138,46 @@ const getAllWishlistProductsByUserId = asyncHandler(async (req, res) => {
   const wishlist = await Wishlist.findOne({ user: userId }).populate(
     "products"
   );
-  if (!wishlist) {
+  if (!wishlist || wishlist.products.length < 1) {
     throw new ApiError(404, "Wishlist is empty!");
   }
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, {}, "All wishlist products fetched successfully!")
+      new ApiResponse(
+        200,
+        wishlist.products,
+        "All wishlist products fetched successfully!"
+      )
     );
+});
+
+const checkItemInWishlist = asyncHandler(async (req, res) => {
+  // get userid and validate it
+  // get product id and validate
+  // find the product id
+  // return a response
+  const userId = req.user._id;
+  if (!isValidObjectId(userId)) {
+    throw new ApiError(401, "Invalid User Id!");
+  }
+
+  const { productId } = req.params;
+  if (!isValidObjectId(productId)) {
+    throw new ApiError(401, "Invalid Product Id!");
+  }
+
+  const wishlist = await Wishlist.findOne({ user: userId });
+  const isItemInWishlist = wishlist.products.some(
+    (item) => item._id.toString() === productId
+  )
+    ? true
+    : false;
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, isItemInWishlist, "Item checked successfully!"));
 });
 
 export {
@@ -147,4 +185,5 @@ export {
   removeProductFromWishlist,
   toggleProductWishlist,
   getAllWishlistProductsByUserId,
+  checkItemInWishlist,
 };

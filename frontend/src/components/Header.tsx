@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../store/store";
 import { useEffect } from "react";
 import { getTotalCartItems } from "../store/slices/cartSlice";
+import { fetchWishlist } from "../store/slices/wishlistSlice";
 
 function Header() {
   const dispatch = useDispatch<AppDispatch>();
@@ -15,9 +16,11 @@ function Header() {
     (state: RootState) => state.authSlice
   );
   const { totalCartItems } = useSelector((state: RootState) => state.cartSlice);
+  const { totalItems } = useSelector((state: RootState) => state.wishlistSlice);
 
   useEffect(() => {
     dispatch(getTotalCartItems());
+    dispatch(fetchWishlist());
   }, [dispatch]);
   return (
     <header className="fixed top-0 w-full flex flex-col items-center bg-white">
@@ -38,7 +41,7 @@ function Header() {
             <Link to={"/wishlist"}>
               <FaHeart className="text-black text-3xl" />
               <span className="absolute -right-4 -top-4 w-[20px] h-[20px] rounded-full bg-blue-500 text-white text-sm font-semibold flex justify-center items-center ">
-                0
+                {totalItems}
               </span>
             </Link>
           </li>
