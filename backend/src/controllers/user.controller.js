@@ -32,9 +32,7 @@ const register = asyncHandler(async (req, res) => {
   // remove password from response
   // return a response
 
-  const { fullName, emailAddress, password, phoneNumber, address } = req.body;
-  // const { street, city, zip } = address;
-
+  const { fullName, emailAddress, password } = req.body;
   if ([fullName, emailAddress, password].some((field) => field.trim() === "")) {
     throw new ApiError(
       400,
@@ -58,9 +56,6 @@ const register = asyncHandler(async (req, res) => {
     fullName: fullName,
     emailAddress: emailAddress,
     password: password,
-    phoneNumber: phoneNumber,
-
-    address: address,
   });
 
   return res
@@ -237,9 +232,48 @@ const updateUserDetails = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid User Id!");
   }
 
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, "User not found!");
+  }
 
+  const { fullName, phoneNumber, street, city, country, zipCode } = req.body;
+  console.log(fullName);
+
+  if (!fullName) {
+    throw new ApiError(400, "Name is required!");
+  }
+
+  const imagePath = req.file?.path;
+  let profileImage;
+  if (imagePath) {
+    profileImage = await uploadOnCloudinary(imagePath);
+  } else {
+    profileImage = "";
+  }
+
+  const updatedUser = await user.updateOne({
+    $set: {
+      fullName: fullName,
+      phoneNumber: phoneNumber,
+      address: { street, city, country, zip: zipCode },
+      profileImage: profileImage,
+    },
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, updatedUser, "User Details updated successfully!")
+    );
 });
 
-
-
-export { register, login, logout, getUser, getAllUsers, updatePassword };
+export {
+  register,
+  login,
+  logout,
+  getUser,
+  getAllUsers,
+  updatePassword,
+  updateUserDetails,
+};

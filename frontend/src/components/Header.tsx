@@ -9,6 +9,7 @@ import type { AppDispatch, RootState } from "../store/store";
 import { useEffect } from "react";
 import { getTotalCartItems } from "../store/slices/cartSlice";
 import { fetchWishlist } from "../store/slices/wishlistSlice";
+import { fetchUser } from "../store/slices/authSlice";
 
 function Header() {
   const dispatch = useDispatch<AppDispatch>();
@@ -17,10 +18,13 @@ function Header() {
   );
   const { totalCartItems } = useSelector((state: RootState) => state.cartSlice);
   const { totalItems } = useSelector((state: RootState) => state.wishlistSlice);
+  const { user } = useSelector((state: RootState) => state.authSlice);
+  const profileImage = user?.profileImage as CategoryImage;
 
   useEffect(() => {
     dispatch(getTotalCartItems());
     dispatch(fetchWishlist());
+    dispatch(fetchUser());
   }, [dispatch]);
   return (
     <header className="fixed top-0 w-full flex flex-col items-center bg-white">
@@ -56,9 +60,23 @@ function Header() {
           {isAuthenticated && (
             <li>
               <Link to={"/profile"}>
-                <div className="cursor-pointer w-[50px] h-[50px] bg-white border-2 border-blue-500 rounded-full">
-                  <img />
-                </div>
+                {profileImage?.url ? (
+                  <img
+                    src={profileImage.url}
+                    width={300}
+                    height={300}
+                    alt={user?.fullName}
+                    className="cursor-pointer w-[50px] h-[50px] bg-white border-2 border-blue-500 rounded-full"
+                  />
+                ) : (
+                  <img
+                    src="/avatar.png"
+                    width={300}
+                    height={300}
+                    alt={user?.fullName}
+                    className="cursor-pointer w-[50px] h-[50px] bg-white border-2 border-blue-500 rounded-full"
+                  />
+                )}
               </Link>
             </li>
           )}

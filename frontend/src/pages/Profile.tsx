@@ -1,35 +1,53 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { HeadingSection, PopUp } from "../components";
 import MaxWidthWrapper from "../utils/MaxWidthWrapper";
-import type { RootState } from "../store/store";
-import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import type { AppDispatch, RootState } from "../store/store";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
+import toast from "react-hot-toast";
+import { fetchUser } from "../store/slices/authSlice";
 
 interface UserData {
   fullName: string;
-  description: string;
+  phoneNumber?: string;
+  street: string;
+  city: string;
+  country: string;
+  zipCode: string;
+
+  profileImage?: File | string;
 }
 
 function Profile() {
+  const dispatch = useDispatch<AppDispatch>();
   const imageRef = useRef<HTMLInputElement>(null);
   const { user } = useSelector((state: RootState) => state.authSlice);
   const [openPopUp, setOpenPopUp] = useState<boolean>(false);
-  const [profileImage, setProfileImage] = useState<File | string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<UserData>({
     fullName: "",
-    description: "",
+    phoneNumber: "",
+    street: "",
+    city: "",
+    country: "",
+    zipCode: "",
+    profileImage: "",
   });
+  const image = user?.profileImage as CategoryImage;
   const formData = new FormData();
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setData((prevData: UserData) => ({ ...prevData, [name]: value }));
-  };
-
   const handleProfileImage = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setProfileImage(e.target.files[0]);
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setData((prevData: UserData) => ({
+        ...prevData,
+        profileImage: files[0] as File,
+      }));
     }
   };
 
@@ -39,13 +57,54 @@ function Profile() {
     }
   };
 
+  const handleUserDataChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setData((prevData: UserData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   formData.append("fullName", data.fullName);
-  formData.append("description", data.description);
-  formData.append("profileImage", profileImage);
+  formData.append("phoneNumber", data.phoneNumber as string);
+  formData.append("street", data.street);
+  formData.append("city", data.city);
+  formData.append("country", data.country);
+  formData.append("zipCode", data.zipCode);
+  formData.append("profileImage", data.profileImage as File);
 
   const handleSubmit = async (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    try {
+      setLoading(true);
+      const response = await fetch("/api/v1/users/update-user", {
+        method: "PATCH",
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      setLoading(false);
+      toast.success(data.message);
+      setData({
+        fullName: "",
+        phoneNumber: "",
+        street: "",
+        city: "",
+        country: "",
+        zipCode: "",
+        profileImage: "",
+      });
+    } catch (error: unknown | Error) {
+      setLoading(false);
+      toast.error(error instanceof Error ? error.message : (error as string));
+    }
   };
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
 
   return (
     <>
@@ -59,25 +118,26 @@ function Profile() {
       >
         <div
           onClick={imageRefHandler}
-          className="cursor-pointer w-[100px] h-[100px] rounded-full border-2 border-blue-500 p-2"
+          className="cursor-pointer w-[100px] h-[100px] rounded-full border-2 border-blue-500"
         >
           <input
             ref={imageRef}
             onChange={handleProfileImage}
+            name="profileImage"
             type="file"
             className="hidden"
           />
-          {user?.profileImage ? (
+          {data?.profileImage ? (
             <img
-              src={user.profileImage}
-              alt={`${user.fullName} image`}
-              className="w-full h-full object-fill"
+              src={URL.createObjectURL(data.profileImage as File)}
+              alt={`${data?.fullName} image`}
+              className="w-full h-full object-fill rounded-full"
             />
           ) : (
             <img
               src="/avatar.png"
               alt="avatar image"
-              className="w-full h-full object-fill"
+              className="w-full h-full object-fill rounded-full"
             />
           )}
         </div>
@@ -93,31 +153,88 @@ function Profile() {
             id="fullName"
             type="text"
             value={data.fullName}
-            onChange={handleChange}
+            onChange={handleUserDataChange}
             className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
           />
         </div>
         <div className="w-full flex flex-col gap-y-1">
           <label
-            htmlFor="description"
+            htmlFor="phoneNumber"
             className="text-lg font-medium text-gray-800"
           >
-            Description
+            Phone Number
           </label>
-          <textarea
-            name="description"
-            id="description"
-            value={data.description}
-            onChange={handleChange}
-            className="w-full min-h-20 max-h-52 border border-gray-300 focus:outline-blue-500 rounded p-2"
+          <input
+            name="phoneNumber"
+            id="phoneNumber"
+            type="text"
+            value={data.phoneNumber}
+            onChange={handleUserDataChange}
+            className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
           />
         </div>
+        <address className="flex flex-col gap-3">
+          <label
+            htmlFor="address"
+            className="text-lg font-medium text-gray-800"
+          >
+            Address
+          </label>
+          <div id="address" className="flex gap-3">
+            <input
+              name="street"
+              id="street"
+              type="text"
+              value={data.street}
+              onChange={handleUserDataChange}
+              placeholder="Street No."
+              className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
+            />
+
+            <input
+              name="city"
+              id="city"
+              type="text"
+              value={data.city}
+              onChange={handleUserDataChange}
+              placeholder="City"
+              className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
+            />
+          </div>
+          <div className="flex gap-3">
+            <input
+              name="country"
+              id="country"
+              type="text"
+              value={data.country}
+              onChange={handleUserDataChange}
+              placeholder="Country"
+              className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
+            />
+
+            <input
+              name="zipCode"
+              id="zipCode"
+              type="text"
+              value={data.zipCode}
+              onChange={handleUserDataChange}
+              placeholder="Zip Code"
+              className="w-full h-8 border border-gray-300 focus:outline-blue-500 rounded p-2"
+            />
+          </div>
+        </address>
+
         <button
           type="submit"
+          disabled={loading}
           onClick={handleSubmit}
-          className="w-fit self-end cursor-pointer text-white text-xl font-medium bg-green-400 hover:bg-green-500 px-10 py-1 rounded-lg"
+          className="w-fit disabled:bg-green-500/50 self-end cursor-pointer text-white text-xl font-medium bg-green-400 hover:bg-green-500 px-10 py-1 rounded-lg"
         >
-          Save
+          {loading ? (
+            <span className="loader w-[20px] h-[20px] border-2 border-gray-100" />
+          ) : (
+            "Save"
+          )}
         </button>
       </PopUp>
       <div className="w-full min-h-[500px] bg-white flex justify-center">
@@ -128,12 +245,12 @@ function Profile() {
           >
             Edit Profile
           </button>
-          <div className="w-[150px] h-[150px] rounded-full border-2 border-blue-500 p-2">
+          <div className="w-[150px] h-[150px] rounded-full border-2 border-blue-500">
             {user?.profileImage ? (
               <img
-                src={user.profileImage}
+                src={image?.url}
                 alt={`${user.fullName} image`}
-                className="w-full h-full object-fill"
+                className="w-full h-full object-fill rounded-full"
               />
             ) : (
               <img

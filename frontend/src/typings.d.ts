@@ -16,7 +16,7 @@ interface User {
   emailAddress: string;
   role: Role;
   phoneNumber?: number;
-  profileImage?: string;
+  profileImage?: string | File | CategoryImage;
   address?: Address;
 }
 
