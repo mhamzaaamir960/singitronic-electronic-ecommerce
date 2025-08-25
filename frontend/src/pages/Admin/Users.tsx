@@ -109,7 +109,7 @@ function Users() {
         console.log(error);
       }
     })();
-  }, []);
+  }, [users]);
 
   return (
     <AdminLayout>

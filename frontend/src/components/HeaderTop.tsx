@@ -27,7 +27,7 @@ function HeaderTop() {
       }
       setLoading(false);
       toast.success(data.message);
-      dispatch(fetchUser())
+      dispatch(fetchUser());
     } catch (error) {
       setLoading(false);
       toast.error(
@@ -58,6 +58,16 @@ function HeaderTop() {
             <li className="text-white text-base font-semibold">
               {user?.fullName}
             </li>
+            {user?.role === "admin" && (
+              <li>
+                <Link
+                  to={"/admin"}
+                  className="text-white text-base font-semibold"
+                >
+                  Admin
+                </Link>
+              </li>
+            )}
             <li>
               <button
                 onClick={handleLogout}

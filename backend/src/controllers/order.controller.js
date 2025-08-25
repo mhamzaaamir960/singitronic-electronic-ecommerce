@@ -16,17 +16,40 @@ const createOrder = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid User Id!");
   }
 
-  const { items, totalAmount, shippingAddress } = req.body;
+  const {
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    items,
+    totalAmount,
+    shippingAddress,
+    paymentStatus,
+    status,
+  } = req.body;
+  const {street, city, country, zip} = shippingAddress
   if (items.length === 0) {
     throw new ApiError(400, "Items are required!");
   }
-  if (!totalAmount || !shippingAddress) {
-    throw new ApiError(400, "Total Amount and Shipping Address is required!");
+  if (
+    [firstName, emailAddress, phoneNumber,street, city, country, zip ].some((item) => item.trim() === "")
+  ) {
+    throw new ApiError(400, "Aistarick fields are required!");
+  }
+
+  if (typeof totalAmount !== "number") {
+    throw new ApiError(400, "Total amount in numbers are required!");
   }
 
   const newOrder = await Order.create({
     user: userId,
     items: items,
+    firstName: firstName,
+    lastName: lastName,
+    emailAddress: emailAddress,
+    phoneNumber: phoneNumber,
+    paymentStatus: paymentStatus,
+    status: status,
     totalAmount: totalAmount,
     shippingAddress: shippingAddress,
   });

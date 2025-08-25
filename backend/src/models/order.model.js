@@ -15,10 +15,33 @@ const orderSchema = new Schema(
     },
     items: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "OrderItem",
+        productId: {
+          type: Schema.Types.ObjectId,
+          ref: "Product",
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          default: 1,
+        },
       },
     ],
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    emailAddress: {
+      type: String,
+      required: true,
+    },
+    phoneNumber: {
+      type: String,
+      required: true,
+    },
     status: {
       type: String,
       enum: ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELED"],

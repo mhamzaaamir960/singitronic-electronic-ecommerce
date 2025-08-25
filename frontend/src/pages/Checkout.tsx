@@ -1,11 +1,95 @@
 import { Link } from "react-router-dom";
 import { HeadingSection } from "../components";
 import MaxWidthWrapper from "../utils/MaxWidthWrapper";
-import { demoProducts } from "../utils/data";
 import { RxCross2 } from "react-icons/rx";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../store/store";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { fetchCartItems } from "../store/slices/cartSlice";
+import toast from "react-hot-toast";
 
 function Checkout() {
-  const product = demoProducts[5];
+  const dispatch = useDispatch<AppDispatch>();
+  const { items } = useSelector((state: RootState) => state.cartSlice);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<Order>({
+    firstName: "",
+    lastName: "",
+    emailAddress: "",
+    phoneNumber: "",
+    status: "PENDING",
+    paymentStatus: "PENDING",
+    totalAmount: 0,
+    shippingAddress: { country: "", city: "", street: "", zip: "" },
+    items: items,
+    orderMessage: "",
+  });
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setData((prevData: Order) => {
+      if (name in data.shippingAddress) {
+        return {
+          ...prevData,
+          shippingAddress: {
+            ...prevData.shippingAddress,
+            [name]: value,
+          },
+        };
+      }
+
+      return {
+        ...prevData,
+        [name]: value,
+      };
+    });
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log(data);
+    try {
+      setLoading(true);
+      const response = await fetch("/api/v1/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const responseData = await response.json();
+      if (!response.ok) {
+        throw new Error(responseData.message);
+      }
+      setLoading(false);
+      setData({
+        firstName: "",
+        lastName: "",
+        emailAddress: "",
+        phoneNumber: "",
+        status: "PENDING",
+        paymentStatus: "PENDING",
+        totalAmount: 0,
+        shippingAddress: { country: "", city: "", street: "", zip: "" },
+        items: items,
+        orderMessage: "",
+      });
+      toast.success(responseData.message);
+    } catch (error: Error | unknown) {
+      setLoading(false)
+      toast.error(error instanceof Error ? error.message : (error as string));
+    }
+  };
+
+  useEffect(() => {
+    setData((prevData: Order) => ({ ...prevData, items: items }));
+  }, [items]);
+
+  useEffect(() => {
+    dispatch(fetchCartItems());
+  }, [dispatch]);
   return (
     <>
       <HeadingSection pageName="Checkout">
@@ -27,10 +111,14 @@ function Checkout() {
                   htmlFor="firstName"
                   className="text-sm font-medium text-gray-800"
                 >
-                  First Name
+                  First Name*
                 </label>
                 <input
                   id="firstName"
+                  name="firstName"
+                  value={data.firstName}
+                  onChange={handleChange}
+                  required={true}
                   type="text"
                   className="w-full h-10 border border-gray-300 focus:outline-blue-500 rounded p-2"
                 />
@@ -44,6 +132,9 @@ function Checkout() {
                 </label>
                 <input
                   id="lastName"
+                  name="lastName"
+                  value={data.lastName}
+                  onChange={handleChange}
                   type="text"
                   className="w-full h-10 border border-gray-300 focus:outline-blue-500 rounded p-2"
                 />
@@ -53,30 +144,36 @@ function Checkout() {
                   htmlFor="emailAddress"
                   className="text-sm font-medium text-gray-800"
                 >
-                  Email Address
+                  Email Address*
                 </label>
                 <input
                   id="emailAddress"
+                  name="emailAddress"
+                  value={data.emailAddress}
+                  onChange={handleChange}
                   type="text"
                   className="w-full h-10 border border-gray-300 focus:outline-blue-500 rounded p-2"
                 />
               </div>
               <div className="w-full flex flex-col gap-y-1">
                 <label
-                  htmlFor="phoneNo"
+                  htmlFor="phoneNumber"
                   className="text-sm font-medium text-gray-800"
                 >
-                  Phone Number
+                  Phone Number*
                 </label>
                 <input
-                  id="phoneNo"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={data.phoneNumber}
+                  onChange={handleChange}
                   type="text"
                   className="w-full h-10 border border-gray-300 focus:outline-blue-500 rounded p-2"
                 />
               </div>
             </div>
             {/* Payment Details */}
-            <div className="w-full min-h-[300px] flex flex-col gap-y-5">
+            {/* <div className="w-full min-h-[300px] flex flex-col gap-y-5">
               <h4 className="text-xl font-semibold text-gray-700 mb-2">
                 Payment Details
               </h4>
@@ -134,7 +231,7 @@ function Checkout() {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
             {/* Shipping address */}
             <div className="w-full min-h-[300px] flex flex-col gap-y-5">
               <h4 className="text-xl font-semibold text-gray-700 mb-2">
@@ -142,39 +239,16 @@ function Checkout() {
               </h4>
               <div className="w-full flex flex-col gap-y-1">
                 <label
-                  htmlFor="company"
+                  htmlFor="street"
                   className="text-sm font-medium text-gray-800"
                 >
-                  Company
+                  Street Address*
                 </label>
                 <input
-                  id="company"
-                  type="text"
-                  className="w-full h-10 border border-gray-300 focus:outline-blue-500 rounded p-2"
-                />
-              </div>
-              <div className="w-full flex flex-col gap-y-1">
-                <label
-                  htmlFor="address"
-                  className="text-sm font-medium text-gray-800"
-                >
-                  Address
-                </label>
-                <input
-                  id="address"
-                  type="text"
-                  className="w-full h-10 border border-gray-300 focus:outline-blue-500 rounded p-2"
-                />
-              </div>
-              <div className="w-full flex flex-col gap-y-1">
-                <label
-                  htmlFor="appartment"
-                  className="text-sm font-medium text-gray-800"
-                >
-                  Appartment, suite, etc.
-                </label>
-                <input
-                  id="appartment"
+                  id="street"
+                  name="street"
+                  value={data.shippingAddress.street}
+                  onChange={handleChange}
                   type="text"
                   className="w-full h-10 border border-gray-300 focus:outline-blue-500 rounded p-2"
                 />
@@ -182,26 +256,32 @@ function Checkout() {
               <div className="flex items-center gap-x-5">
                 <div className="w-full flex flex-col gap-y-1">
                   <label
-                    htmlFor="country"
+                    htmlFor="city"
                     className="text-sm font-medium text-gray-800"
                   >
-                    Country
+                    City*
                   </label>
                   <input
-                    id="country"
+                    id="city"
+                    name="city"
+                    value={data.shippingAddress.city}
+                    onChange={handleChange}
                     type="text"
                     className="w-full h-10 border border-gray-300 focus:outline-blue-500 rounded p-2"
                   />
                 </div>
                 <div className="w-full flex flex-col gap-y-1">
                   <label
-                    htmlFor="city"
+                    htmlFor="country"
                     className="text-sm font-medium text-gray-800"
                   >
-                    City
+                    Country*
                   </label>
                   <input
-                    id="city"
+                    id="country"
+                    name="country"
+                    value={data.shippingAddress.country}
+                    onChange={handleChange}
                     type="text"
                     className="w-full h-10 border border-gray-300 focus:outline-blue-500 rounded p-2"
                   />
@@ -209,13 +289,16 @@ function Checkout() {
 
                 <div className="w-full flex flex-col gap-y-1">
                   <label
-                    htmlFor="postalCode"
+                    htmlFor="zip"
                     className="text-sm font-medium text-gray-800"
                   >
-                    Postal Code
+                    Zip Code*
                   </label>
                   <input
-                    id="postalCode"
+                    id="zip"
+                    name="zip"
+                    value={data.shippingAddress.zip}
+                    onChange={handleChange}
                     type="text"
                     className="w-full h-10 border border-gray-300 focus:outline-blue-500 rounded p-2"
                   />
@@ -223,21 +306,31 @@ function Checkout() {
               </div>
               <div className="w-full flex flex-col gap-y-1">
                 <label
-                  htmlFor="orderNotice"
+                  htmlFor="orderMessage"
                   className="text-sm font-medium text-gray-800"
                 >
-                  Order notice
+                  Order Message
                 </label>
                 <textarea
-                  id="orderNotice"
+                  id="orderMessage"
+                  name="orderMessage"
+                  value={data.orderMessage}
+                  onChange={handleChange}
                   rows={3}
                   className="w-full appearance-none min-h-32 max-h-40 border border-gray-300 focus:outline-blue-500 rounded p-2"
                 />
               </div>
             </div>
             <div className="w-full h-[1px] bg-gray-300 rounded-full" />
-            <button className="cursor-pointer w-full h-10 bg-blue-500 hover:bg-blue-500/90 text-xl font-semibold text-white rounded ">
-              Pay Now
+            <button
+              onClick={handleSubmit}
+              className="cursor-pointer w-full h-10 bg-blue-500 hover:bg-blue-500/90 text-xl font-semibold text-white rounded "
+            >
+              {loading ? (
+                <span className="loader w-[20px] h-[20px] border-2 border-gray-100" />
+              ) : (
+                "Place Order"
+              )}
             </button>
           </div>
 
@@ -245,39 +338,37 @@ function Checkout() {
             <h4 className="text-xl font-semibold text-gray-700">
               Order Summary
             </h4>
-            <div className="w-full border-b border-gray-300 flex  gap-x-5 py-10">
-              <img
-                src={`/${product.mainImage}`}
-                className="w-[100px] h-[100px] object-cover"
-              />
-              <div className="w-full flex justify-between">
-                <div className="">
-                  <h5 className="text-base font-medium text-gray-800">
-                    {product.title}
-                  </h5>
-                  <p className="flex items-center text-base text-gray-500">
-                    <RxCross2 className="text-sm" />3
-                  </p>
-                </div>
-                <p className="text-base font-semibold">${product.price}</p>
-              </div>
-            </div>
-            <div className="w-full h-[150px] border-b border-gray-300 flex items-center gap-x-5">
-              <img
-                src={`/${product.mainImage}`}
-                className="w-[100px] h-[100px] object-cover"
-              />
-              <div className="w-full flex justify-between">
-                <div className="">
-                  <h5 className="text-base font-medium text-gray-800">
-                    {product.title}
-                  </h5>
-                  <p className="flex items-center text-base text-gray-500">
-                    <RxCross2 className="text-sm" />3
-                  </p>
-                </div>
-                <p className="text-base font-semibold">${product.price}</p>
-              </div>
+
+            <div>
+              {items.length > 0 &&
+                items.map((item: { productId: Product; quantity: number }) => {
+                  const image = item.productId.productImage as CategoryImage;
+                  return (
+                    <div
+                      key={item.productId._id}
+                      className="w-full h-[150px] border-b border-gray-300 flex items-center gap-x-5"
+                    >
+                      <img
+                        src={image.url}
+                        className="w-[100px] h-[100px] object-cover"
+                      />
+                      <div className="w-full flex justify-between">
+                        <div className="">
+                          <h5 className="text-base font-medium text-gray-800">
+                            {item.productId.name}
+                          </h5>
+                          <p className="flex items-center text-base text-gray-500">
+                            <RxCross2 className="text-sm" />
+                            {item.quantity}
+                          </p>
+                        </div>
+                        <p className="text-base font-semibold">
+                          Rs.{item.productId.price}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
             <div className="w-full flex items-center justify-between mt-10">
               <p className="text-md text-gray-500">Subtotal</p>

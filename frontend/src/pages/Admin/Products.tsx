@@ -152,7 +152,7 @@ function Products() {
 
   useEffect(() => {
     dispatch(fetchProducts());
-  }, [dispatch, products]);
+  }, [dispatch, productData]);
 
   return (
     <AdminLayout>

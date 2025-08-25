@@ -11,7 +11,7 @@ interface Address {
 }
 
 interface User {
-  _id?: string
+  _id?: string;
   fullName: string;
   emailAddress: string;
   role: Role;
@@ -38,7 +38,7 @@ interface CategoryImage {
   public_id;
 }
 interface Category {
-  _id?: string
+  _id?: string;
   name: string;
   description?: string;
   categoryImage?: string | File | CategoryImage;
@@ -60,10 +60,26 @@ interface Cart {
 }
 
 interface Order {
-  user: User;
-  items: Product[];
+  _id?: string;
+  user?: User;
+  items: {
+    productId: Product;
+    quantity: number;
+  }[];
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  phoneNumber: sting;
   status: "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELED";
-  payment: "PENDING" | "PAID" | "REFUNDED";
+  paymentStatus: "PENDING" | "PAID" | "REFUNDED";
   totalAmount: number;
-  shippingAddress: Address;
+  shippingAddress: {
+    country: string;
+    city: string;
+    street: string;
+    zip: string;
+  };
+  orderMessage?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

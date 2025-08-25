@@ -122,7 +122,7 @@ function Categories() {
 
   useEffect(() => {
     dispatch(fetchCategories());
-  }, [dispatch, data, categories]);
+  }, [dispatch, data]);
   return (
     <AdminLayout>
       <AdminSectionHeading title="All Categories" />

@@ -19,7 +19,6 @@ interface UserData {
   city: string;
   country: string;
   zipCode: string;
-
   profileImage?: File | string;
 }
 
@@ -238,7 +237,7 @@ function Profile() {
         </button>
       </PopUp>
       <div className="w-full min-h-[500px] bg-white flex justify-center">
-        <MaxWidthWrapper className="relative top-0 w-full border flex  flex-col items-center gap-x-20 p-5">
+        <MaxWidthWrapper className="relative top-0 w-full flex  flex-col items-center gap-x-20 p-5">
           <button
             onClick={() => setOpenPopUp(true)}
             className="absolute top-10 right-10 cursor-pointer text-xl font-medium text-white bg-blue-500  hover:bg-blue-600 px-5 py-2 rounded"

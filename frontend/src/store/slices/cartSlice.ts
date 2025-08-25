@@ -155,7 +155,7 @@ interface ItemsState {
 
 interface CartState {
   loading: boolean;
-  items: ItemsState[] | null;
+  items: ItemsState[];
   itemQuantity: number;
   error: string | null;
   message: string | null;
@@ -166,7 +166,7 @@ interface CartState {
 
 const initialState: CartState = {
   loading: true,
-  items: null,
+  items: [],
   itemQuantity: 0,
   error: null,
   message: null,
@@ -182,7 +182,7 @@ export const cartSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchCartItems.pending, (state: CartState) => {
       state.loading = true;
-      state.items = null;
+      state.items = [];
       state.error = null;
     });
     builder.addCase(
@@ -202,7 +202,7 @@ export const cartSlice = createSlice({
       fetchCartItems.rejected,
       (state: CartState, action: PayloadAction<unknown | string>) => {
         state.loading = false;
-        state.items = null;
+        state.items = [];
         state.error = action.payload as string;
       }
     );

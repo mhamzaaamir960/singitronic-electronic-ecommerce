@@ -189,7 +189,7 @@ const updatePassword = asyncHandler(async (req, res) => {
   // update password
   // return a response
   const { oldPassword, newPassword } = req.body;
-  if (!oldPassword || newPassword) {
+  if (!oldPassword || !newPassword) {
     throw new ApiError(400, "All fields are required!");
   }
 
