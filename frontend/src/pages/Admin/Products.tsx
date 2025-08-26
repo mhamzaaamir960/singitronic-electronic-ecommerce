@@ -129,7 +129,7 @@ function Products() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`/api/v1/products/${productId}`, {
+      const response = await fetch(`/api/v1/products/product/${productId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

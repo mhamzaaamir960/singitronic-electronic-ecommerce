@@ -185,7 +185,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
   // return a response
 
   const products = await Product.find().populate("categoryId");
-  if (!products) {
+  if (products.length < 1) {
     throw new ApiError(404, "Products not found!");
   }
 
@@ -194,4 +194,39 @@ const getAllProducts = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, products, "All Products fetched successfully!"));
 });
 
-export { addProduct, updateProduct, deleteProduct, getProduct, getAllProducts };
+const getQueryProducts = asyncHandler(async (req, res) => {
+  // get query from frontend
+  // get all products before checking condition and sort if not default
+  // return a response
+
+  const query = req.query;
+  let products;
+  if (query.sort === "a-z") {
+    products = await Product.find().populate("categoryId").sort({ name: 1 });
+  } else if (query.sort === "z-a") {
+    products = await Product.find().populate("categoryId").sort({ name: -1 });
+  } else if (query.sort === "low-to-high") {
+    products = await Product.find().populate("categoryId").sort({ price: 1 });
+  } else if (query.sort === "high-to-low") {
+    products = await Product.find().populate("categoryId").sort({ price: -1 });
+  } else {
+    products = await Product.find().populate("categoryId");
+  }
+
+  if (products.length < 1) {
+    throw new ApiError(404, "Products not found!");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, products, "All Products fetched successfully!"));
+});
+
+export {
+  addProduct,
+  updateProduct,
+  deleteProduct,
+  getProduct,
+  getAllProducts,
+  getQueryProducts,
+};

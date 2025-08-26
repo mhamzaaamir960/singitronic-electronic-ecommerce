@@ -5,6 +5,7 @@ import {
   deleteProduct,
   getAllProducts,
   getProduct,
+  getQueryProducts,
   updateProduct,
 } from "../controllers/product.controller.js";
 import { isAdmin, verifyJWT } from "../middlewares/auth.middleware.js";
@@ -16,9 +17,10 @@ router
   .post(verifyJWT, isAdmin, upload.single("productImage"), addProduct)
   .get(getAllProducts);
 router
-  .route("/:productId")
+  .route("/product/:productId")
   .get(getProduct)
   .patch(verifyJWT, isAdmin, updateProduct)
   .delete(verifyJWT, isAdmin, deleteProduct);
+router.route("/query-products").get(getQueryProducts);
 
 export default router;

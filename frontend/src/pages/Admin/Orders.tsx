@@ -9,76 +9,16 @@ import type { AppDispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
 import { getAllOrders } from "../../store/slices/orderSlice";
 
-// const orders = [
-//   {
-//     orderId: "ORD001",
-//     name: "John Doe",
-//     country: "USA",
-//     status: "Processing",
-//     subtotal: 120.5,
-//     shipping: 10.0,
-//     total: 130.5,
-//     date: "2025-08-01",
-//     paymentMethod: "Credit Card",
-//     items: 3,
-//   },
-//   {
-//     orderId: "ORD002",
-//     name: "Jane Smith",
-//     country: "UK",
-//     status: "Shipped",
-//     subtotal: 85.0,
-//     shipping: 5.0,
-//     total: 90.0,
-//     date: "2025-08-02",
-//     paymentMethod: "PayPal",
-//     items: 2,
-//   },
-//   {
-//     orderId: "ORD003",
-//     name: "Ali Khan",
-//     country: "Pakistan",
-//     status: "Delivered",
-//     subtotal: 200.0,
-//     shipping: 0.0,
-//     total: 200.0,
-//     date: "2025-08-03",
-//     paymentMethod: "Cash on Delivery",
-//     items: 5,
-//   },
-//   {
-//     orderId: "ORD004",
-//     name: "Emma Wilson",
-//     country: "Australia",
-//     status: "Cancelled",
-//     subtotal: 150.0,
-//     shipping: 8.0,
-//     total: 158.0,
-//     date: "2025-08-04",
-//     paymentMethod: "Debit Card",
-//     items: 4,
-//   },
-//   {
-//     orderId: "ORD005",
-//     name: "Carlos Rivera",
-//     country: "Mexico",
-//     status: "Returned",
-//     subtotal: 99.99,
-//     shipping: 7.0,
-//     total: 106.99,
-//     date: "2025-08-05",
-//     paymentMethod: "Stripe",
-//     items: 1,
-//   },
-// ];
 
 function Orders() {
   const dispatch = useDispatch<AppDispatch>();
   const { orders } = useSelector((state: RootState) => state.orderSlice);
 
+
   useEffect(() => {
     dispatch(getAllOrders());
   }, [dispatch]);
+
 
   return (
     <AdminLayout>

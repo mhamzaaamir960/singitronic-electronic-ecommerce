@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Product from "./Product";
 import SortBy from "./SortBy";
@@ -6,16 +7,28 @@ import {
   MdOutlineKeyboardDoubleArrowRight,
 } from "react-icons/md";
 import type { AppDispatch, RootState } from "../store/store";
-import { useEffect } from "react";
-import { fetchProducts } from "../store/slices/productSlice";
+import { fetchQueryProducts } from "../store/slices/productSlice";
 
-function AllProducts() {
+function AllProducts({
+  rangeValue,
+  rating,
+  inStock,
+  outOfStock,
+}: {
+  rangeValue: number;
+  rating: number;
+  inStock: boolean;
+  outOfStock: boolean;
+}) {
+  const [sortValue, setSortValue] = useState<string>("default");
   const dispatch = useDispatch<AppDispatch>();
-  const { products } = useSelector((state: RootState) => state.productsSlice);
+  const { queryProducts } = useSelector(
+    (state: RootState) => state.productsSlice
+  );
 
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch, products]);
+    dispatch(fetchQueryProducts(sortValue));
+  }, [dispatch, sortValue]);
   return (
     <div className=" w-full flex flex-col gap-y-5 ">
       <div className="flex justify-between items-center">
@@ -24,14 +37,14 @@ function AllProducts() {
         </h3>
         <div className="flex gap-x-5">
           <h3 className="text-2xl">Sort By:</h3>
-          <SortBy />
+          <SortBy sortValue={sortValue} setSortValue={setSortValue} />
         </div>
       </div>
       <div className="w-full h-0.5 bg-gray-300/50 rounded-full my-3" />
-      <div className="flex flex-wrap justify-between gap-5 p-5">
-        {products &&
-          products.length > 0 &&
-          products.map((product: Product) => {
+      <div className="flex flex-wrap justify-center gap-x-10 gap-y-5 p-5">
+        {queryProducts &&
+          queryProducts.length > 0 &&
+          queryProducts.map((product: Product) => {
             const image = product.productImage as CategoryImage;
             return (
               <Product

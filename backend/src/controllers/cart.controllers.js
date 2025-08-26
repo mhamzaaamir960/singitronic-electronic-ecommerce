@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/AsyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Cart } from "../models/cart.model.js";
+import { Product } from "../models/product.model.js";
 
 const addToCart = asyncHandler(async (req, res) => {
   // get user id and validate it
@@ -21,19 +22,24 @@ const addToCart = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid Product Id!");
   }
 
-  const cart = await Cart.findOne({
+  const cartProduct = await Cart.findOne({
     user: userId,
     "items.productId": productId,
   });
 
-  if (cart) {
+  if (cartProduct) {
     throw new ApiError(400, "Product already in cart!");
   }
 
   await Cart.findOneAndUpdate(
     { user: userId },
     {
-      $push: { items: { productId: productId, quantity: 1 } },
+      $push: {
+        items: {
+          productId: productId,
+          quantity: 1,
+        },
+      },
       $setOnInsert: { user: userId },
     },
     { new: true, upsert: true }
@@ -59,8 +65,8 @@ const removeFromCart = asyncHandler(async (req, res) => {
   }
 
   await Cart.findOneAndUpdate(
-    { user: userId},
-    { $pull: { items: {productId : productId} } },
+    { user: userId },
+    { $pull: { items: { productId: productId } } },
     { new: true }
   );
 

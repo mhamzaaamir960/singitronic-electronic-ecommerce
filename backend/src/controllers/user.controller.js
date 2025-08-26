@@ -46,7 +46,6 @@ const register = asyncHandler(async (req, res) => {
   }
 
   const imageLocalPath = req.files?.profileImage[0]?.path;
-  console.log(imageLocalPath);
   let profileImage;
   if (imageLocalPath) {
     profileImage = await uploadOnCloudinary(imageLocalPath);
@@ -81,7 +80,6 @@ const login = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found!");
   }
   const isPasswordValid = await user.isPasswordCorrect(password);
-  console.log(isPasswordValid);
   if (!isPasswordValid) {
     throw new ApiError(401, "Invalid Password!");
   }
@@ -152,7 +150,6 @@ const getUser = asyncHandler(async (req, res) => {
   // find user if not throw error
   // return a response
 
-  console.log(req.session);
   const userId = req.user?._id;
   if (!isValidObjectId(userId)) {
     throw new ApiError(401, "Un-authorized request!");
@@ -238,7 +235,6 @@ const updateUserDetails = asyncHandler(async (req, res) => {
   }
 
   const { fullName, phoneNumber, street, city, country, zipCode } = req.body;
-  console.log(fullName);
 
   if (!fullName) {
     throw new ApiError(400, "Name is required!");

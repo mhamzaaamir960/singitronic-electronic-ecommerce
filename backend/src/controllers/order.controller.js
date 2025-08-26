@@ -27,12 +27,14 @@ const createOrder = asyncHandler(async (req, res) => {
     paymentStatus,
     status,
   } = req.body;
-  const {street, city, country, zip} = shippingAddress
+  const { street, city, country, zip } = shippingAddress;
   if (items.length === 0) {
     throw new ApiError(400, "Items are required!");
   }
   if (
-    [firstName, emailAddress, phoneNumber,street, city, country, zip ].some((item) => item.trim() === "")
+    [firstName, emailAddress, phoneNumber, street, city, country, zip].some(
+      (item) => item.trim() === ""
+    )
   ) {
     throw new ApiError(400, "Aistarick fields are required!");
   }
@@ -115,7 +117,7 @@ const getAllOrders = asyncHandler(async (req, res) => {
   // get All order and check orders exist
   // return a response
 
-  const allOrders = await Order.find().populate("items");
+  const allOrders = await Order.find().populate("items.productId");
   if (allOrders.length === 0) {
     throw new ApiError(404, "Orders not found!");
   }
