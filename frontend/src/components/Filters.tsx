@@ -63,7 +63,7 @@ function Filters({
           id=""
           value={rangeValue}
           min={0}
-          max={1000}
+          max={400000}
           onChange={(e) => setRangeValue(e.target.value as unknown as number)}
           className={`w-full h-7 bg-blue-500 rounded-full px-1 appearance-none cursor-pointer
                     [&::-webkit-slider-thumb]:appearance-none

@@ -23,10 +23,19 @@ export const fetchProducts = createAsyncThunk(
 );
 export const fetchQueryProducts = createAsyncThunk(
   "products/fetchQueryProducts",
-  async (query: string, { rejectWithValue }) => {
+  async (
+    query: {
+      sort: string;
+      inStock: boolean;
+      outOfStock: boolean;
+      rating: number;
+      price: number;
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await fetch(
-        `/api/v1/products/query-products/?sort=${query}`
+        `/api/v1/products/query-products/?sort=${query.sort}&inStock=${query.inStock}&outStock=${query.outOfStock}&rating=${query.rating}&price=${query.price}`
       );
       const data = await response.json();
       if (!response.ok) {

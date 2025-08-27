@@ -10,12 +10,12 @@ import type { AppDispatch, RootState } from "../store/store";
 import { fetchQueryProducts } from "../store/slices/productSlice";
 
 function AllProducts({
-  rangeValue,
+  price,
   rating,
   inStock,
   outOfStock,
 }: {
-  rangeValue: number;
+  price: number;
   rating: number;
   inStock: boolean;
   outOfStock: boolean;
@@ -27,8 +27,16 @@ function AllProducts({
   );
 
   useEffect(() => {
-    dispatch(fetchQueryProducts(sortValue));
-  }, [dispatch, sortValue]);
+    dispatch(
+      fetchQueryProducts({
+        sort: sortValue,
+        price,
+        inStock,
+        outOfStock,
+        rating,
+      })
+    );
+  }, [dispatch, sortValue, inStock, outOfStock, rating, price]);
   return (
     <div className=" w-full flex flex-col gap-y-5 ">
       <div className="flex justify-between items-center">

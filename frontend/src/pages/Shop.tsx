@@ -5,7 +5,7 @@ import { useState } from "react";
 function Shop() {
   const [inStock, setInStock] = useState<boolean>(true);
   const [outOfStock, setOutOfStock] = useState<boolean>(true);
-  const [rangeValue, setRangeValue] = useState<number>(1000);
+  const [price, setprice] = useState<number>(400000);
   const [rating, setRating] = useState<number>(5);
 
   return (
@@ -17,17 +17,17 @@ function Shop() {
             inStock={inStock}
             outOfStock={outOfStock}
             rating={rating}
-            rangeValue={rangeValue}
+            rangeValue={price}
             setInStock={setInStock}
             setOutOfStock={setOutOfStock}
             setRating={setRating}
-            setRangeValue={setRangeValue}
+            setRangeValue={setprice}
           />
           <AllProducts
             inStock={inStock}
             outOfStock={outOfStock}
             rating={rating}
-            rangeValue={rangeValue}
+            price={price}
           />
         </div>
       </MaxWidthWrapper>
