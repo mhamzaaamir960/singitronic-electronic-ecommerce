@@ -93,7 +93,6 @@ const googleLogin = asyncHandler(async (req, res) => {
     sameSite: "lax",
     maxAge: 60 * 24 * 60 * 60 * 1000,
   };
-  console.log(user)
 
   if (!user) {  
     const newUser = await User.create({
