@@ -24,6 +24,10 @@ const orderSchema = new Schema(
           required: true,
           default: 1,
         },
+        subtotal: {
+          type: Number,
+          required: true,
+        },
       },
     ],
     firstName: {

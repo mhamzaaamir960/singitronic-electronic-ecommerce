@@ -30,6 +30,7 @@ const addToCart = asyncHandler(async (req, res) => {
   if (cartProduct) {
     throw new ApiError(400, "Product already in cart!");
   }
+  const product = await Product.findById(productId);
 
   await Cart.findOneAndUpdate(
     { user: userId },
@@ -38,6 +39,7 @@ const addToCart = asyncHandler(async (req, res) => {
         items: {
           productId: productId,
           quantity: 1,
+          subtotal: product.price * 1,
         },
       },
       $setOnInsert: { user: userId },
@@ -92,23 +94,29 @@ const incrementQuantity = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid Product Id!");
   }
 
-  const product = await Cart.findOne({
+  const cartProduct = await Cart.findOne({
     user: userId,
     "items.productId": productId,
   });
 
-  if (!product) {
+  if (!cartProduct) {
     throw new ApiError(
       404,
       "Please add to cart before then increase quantity!"
     );
   }
+  const product = await Product.findById(productId);
+  if (!product) {
+    throw new ApiError(404, "Product not found!");
+  }
 
-  await Cart.findOneAndUpdate(
-    { user: userId, "items.productId": productId },
-    { $inc: { "items.$.quantity": 1 } },
-    { new: true }
+  const itemIndex = cartProduct.items.findIndex(
+    (item) => item.productId.toString() === productId
   );
+  const item = cartProduct.items[itemIndex];
+  item.quantity += 1;
+  item.subtotal = product.price * item.quantity;
+  await cartProduct.save();
 
   return res
     .status(200)
@@ -131,19 +139,31 @@ const decrementQuantity = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid Product Id!");
   }
 
-  await Cart.findOneAndUpdate(
-    {
-      user: userId,
-      "items.productId": productId,
-      "items.quantity": { $gt: 1 },
-    },
-    { $inc: { "items.$.quantity": -1 } },
-    { new: true }
-  );
+  const cartProduct = await Cart.findOne({
+    user: userId,
+    "items.productId": productId,
+  });
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, {}, "Quantity decreased successfully!"));
+  const product = await Product.findById(productId);
+  if (!product) {
+    throw new ApiError(404, "Product not found!");
+  }
+
+  const itemIndex = cartProduct.items.findIndex(
+    (item) => item.productId.toString() === productId
+  );
+  const item = cartProduct.items[itemIndex];
+  if (item.quantity >= 1) {
+    item.quantity -= 1;
+    item.subtotal = product.price * item.quantity;
+    await cartProduct.save();
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "Quantity decreased successfully!"));
+  } else {
+    return res.status(200);
+  }
 });
 const getSingleProductQuantity = asyncHandler(async (req, res) => {
   // get userid and product and validate both
@@ -210,7 +230,6 @@ const getCartItemsByUserId = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, cartItems, "Cart items fetched successfully!"));
 });
-
 const totalCartItems = asyncHandler(async (req, res) => {
   // get user id and validate
   // find the cart and check exists

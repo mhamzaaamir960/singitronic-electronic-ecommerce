@@ -151,6 +151,7 @@ const getTotalCartItems = createAsyncThunk(
 interface ItemsState {
   productId: Product;
   quantity: number;
+  subtotal: number;
 }
 
 interface CartState {
@@ -191,8 +192,7 @@ export const cartSlice = createSlice({
         state.loading = false;
         state.items = action.payload;
         state.totalPrice = state.items.reduce(
-          (acc: number, item) =>
-            Number(acc) + Number(item.quantity) * Number(item.productId.price),
+          (acc: number, item) => Number(acc) + Number(item.subtotal),
           0
         );
         state.error = null;
