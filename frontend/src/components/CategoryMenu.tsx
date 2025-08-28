@@ -4,6 +4,7 @@ import CategoryItem from "./CategoryItem";
 import type { AppDispatch, RootState } from "../store/store";
 import { useEffect } from "react";
 import { fetchCategories } from "../store/slices/categorySlice";
+import { Skeleton } from "./ui/skeleton";
 
 function CategoryMenu() {
   const dispatch = useDispatch<AppDispatch>();
@@ -19,21 +20,26 @@ function CategoryMenu() {
           Browse Categories
         </h2>
         <div className="flex flex-wrap justify-center items-center gap-5">
-          {categories &&
-            categories.length > 0 &&
-            categories.map((category: Category) => {
-              const image = category.categoryImage as CategoryImage;
-              return (
-                <CategoryItem key={category._id} title={category.name}>
-                  <img
-                    src={image.url}
-                    alt={`${category.name} image`}
-                    width={48}
-                    height={48}
+          {categories && categories.length > 0
+            ? categories.map((category: Category) => {
+                const image = category.categoryImage as CategoryImage;
+                return (
+                  <CategoryItem key={category._id} title={category.name}>
+                    <img
+                      src={image.url}
+                      alt={`${category.name} image`}
+                      width={48}
+                      height={48}
+                    />
+                  </CategoryItem>
+                );
+              })
+            : Array.from({ length: 10 }, (_, index: number) => (
+                  <Skeleton
+                    key={index}
+                    className="w-[250px] h-[120px] rounded bg-blue-100"
                   />
-                </CategoryItem>
-              );
-            })}
+              ))}
         </div>
       </MaxWidthWrapper>
     </div>
