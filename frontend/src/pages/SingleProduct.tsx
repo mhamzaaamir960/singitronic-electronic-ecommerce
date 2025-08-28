@@ -67,6 +67,7 @@ function SingleProduct() {
     }
   }, [dispatch, productId]);
 
+
   return (
     <div className="w-full min-h-[900px] flex justify-center items-center bg-white mt-20">
       <MaxWidthWrapper className="flex justify-center items-center gap-14 ">

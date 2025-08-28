@@ -18,6 +18,12 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    googleId: {
+      type: String,
+    },
+    authProvider: {
+      type: String
+    },
     role: {
       type: String,
       enum: ["user", "admin"],

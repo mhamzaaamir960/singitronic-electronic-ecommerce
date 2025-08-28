@@ -70,6 +70,10 @@ function Login() {
       );
     }
   };
+
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:8080/api/v1/users/auth/google";
+  };
   return (
     <>
       <HeadingSection pageName="Login">
@@ -154,7 +158,10 @@ function Login() {
             </div>
 
             <div className="mt-6 flex items-center justify-center gap-5">
-              <button className="cursor-pointer hover:bg-gray-50 px-10 flex w-full items-center border border-gray-300 justify-center gap-3 rounded-md bg-white px-3 py-1.5 text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+              <button
+                onClick={handleGoogleLogin}
+                className="cursor-pointer hover:bg-gray-50 px-10 flex w-full items-center border border-gray-300 justify-center gap-3 rounded-md bg-white px-3 py-1.5 text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              >
                 <FcGoogle />
                 <span className="text-sm font-semibold leading-6">Google</span>
               </button>

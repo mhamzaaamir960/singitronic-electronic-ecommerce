@@ -2,9 +2,9 @@ import { asyncHandler } from "../utils/AsyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
-
 import { User } from "../models/user.model.js";
 import { isValidObjectId } from "mongoose";
+import axios from "axios";
 
 const generateAccessAndRefreshTokens = async (user) => {
   try {
@@ -60,6 +60,69 @@ const register = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(201, newUser, "New user registered successfully!"));
+});
+
+const googleLogin = asyncHandler(async (req, res) => {
+  const { code } = req.query;
+
+  const sendData = {
+    client_id: process.env.CLIENT_ID,
+    client_secret: process.env.CLIENT_SECRET,
+    code,
+    redirect_uri: process.env.REDIRECT_URI,
+    grant_type: "authorization_code",
+  };
+  const { data } = await axios.post(process.env.TOKEN_URL, sendData);
+
+  const { access_token, id_token } = data;
+  const response = await fetch(
+    "https://www.googleapis.com/oauth2/v2/userinfo",
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  );
+  const profile = await response.json();
+  const user = await User.findOne({ emailAddress: profile.email });
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    maxAge: 60 * 24 * 60 * 60 * 1000,
+  };
+  console.log(user)
+
+  if (!user) {  
+    const newUser = await User.create({
+      fullName: profile.name,
+      emailAddress: profile.email,
+      password: profile.id,
+      googleId: profile.id,
+      authProvider: "google",
+      profileImage: {
+        url: profile.picture,
+        public_id: ""
+      },
+    });
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+      newUser
+    );
+    return res
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .redirect("http://localhost:5173");
+  }
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    user
+  );
+
+  return res
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .redirect("http://localhost:5173");
 });
 
 const login = asyncHandler(async (req, res) => {
@@ -272,4 +335,5 @@ export {
   getAllUsers,
   updatePassword,
   updateUserDetails,
+  googleLogin,
 };

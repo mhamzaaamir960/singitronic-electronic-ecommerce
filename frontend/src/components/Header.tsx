@@ -19,7 +19,10 @@ function Header() {
   const { totalCartItems } = useSelector((state: RootState) => state.cartSlice);
   const { totalItems } = useSelector((state: RootState) => state.wishlistSlice);
   const { user } = useSelector((state: RootState) => state.authSlice);
-  const profileImage = user?.profileImage as CategoryImage;
+  const profileImage =
+    user?.profileImage && user.profileImage.url
+      ? user.profileImage.url
+      : user?.profileImage;
 
   useEffect(() => {
     dispatch(getTotalCartItems());
@@ -60,9 +63,9 @@ function Header() {
           {isAuthenticated && (
             <li>
               <Link to={"/profile"}>
-                {profileImage?.url ? (
+                {profileImage ? (
                   <img
-                    src={profileImage.url}
+                    src={profileImage}
                     width={300}
                     height={300}
                     alt={user?.fullName}

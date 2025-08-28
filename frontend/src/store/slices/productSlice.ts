@@ -53,7 +53,7 @@ export const getSingleProduct = createAsyncThunk(
   "products/getSingleProduct",
   async (productId: string, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/products/${productId}`);
+      const response = await fetch(`/api/v1/products/product/${productId}`);
       const data = await response.json();
       if (!response.ok) {
         throw new Error(`Error: ${data.message}`);
