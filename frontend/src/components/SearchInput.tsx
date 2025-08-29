@@ -10,7 +10,7 @@ function SearchInput() {
   };
   return (
     <form
-      className="h-[50px] flex  w-full max-w-[60%] justify-center "
+      className="h-[50px] hidden md:flex  w-full max-w-[50%] lg:max-w-[60%] justify-center "
       onSubmit={searchProducts}
     >
       <input

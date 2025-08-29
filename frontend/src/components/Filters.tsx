@@ -1,3 +1,6 @@
+import { RxCross2 } from "react-icons/rx";
+
+
 function Filters({
   rangeValue,
   rating,
@@ -7,18 +10,25 @@ function Filters({
   setOutOfStock,
   setRangeValue,
   setRating,
+  openSidebar,
+  setIsOpenSidebar,
 }: {
   rangeValue: number;
   rating: number;
   inStock: boolean;
   outOfStock: boolean;
+  openSidebar: boolean;
+  setIsOpenSidebar: (openSidebar: boolean) => void;
   setInStock: (inStock: boolean) => void;
   setOutOfStock: (outOfStock: boolean) => void;
   setRating: (rating: number) => void;
   setRangeValue: (rangeValue: number) => void;
 }) {
   return (
-    <div className="max-w-[250px] w-full flex flex-col gap-y-2">
+    <div
+      className={`absolute top-[230px] ${openSidebar ? "left-0 ": "-left-[500px]"} lg:relative lg:top-0 lg:left-0 bg-white border  lg:border-none rounded-r-xl drop-shadow-2xl lg:drop-shadow-none max-w-[300px] lg:max-w-[250px] w-full flex flex-col gap-y-2 p-10 lg:p-0 z-10`}
+    >
+      <RxCross2 onClick={() => setIsOpenSidebar(false)} className="lg:hidden cursor-pointer absolute top-5 right-5 text-xl text-gray-800 hover:text-black"/>
       <h3 className="text-2xl text-gray-800 font-medium">Filters</h3>
       <div className="w-full h-0.5 bg-gray-300/50 rounded-full my-3" />
       <div className="flex flex-col gap-y-3">
@@ -77,7 +87,7 @@ function Filters({
                     [&::-webkit-slider-thumb]:transition-all
          `}
         />
-        <p>Max Price: ${rangeValue}</p>
+        <p>Max Price: Rs.{rangeValue}</p>
       </div>
       <div className="w-full h-0.5 bg-gray-300/50 rounded-full my-3" />
       <div className="flex flex-col gap-y-5">

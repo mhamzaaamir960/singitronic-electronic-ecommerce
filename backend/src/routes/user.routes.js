@@ -24,7 +24,6 @@ router
   .route("/update-user")
   .patch(verifyJWT, upload.single("profileImage"), updateUserDetails);
 router.route("/auth/google").get((req, res) => {
-  console.log("omer")
   const url = `${process.env.AUTH_URI}?client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&scope=profile email`;
   res.redirect(url);
 });

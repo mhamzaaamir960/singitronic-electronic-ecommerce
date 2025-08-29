@@ -1,4 +1,12 @@
-import type { ChangeEvent } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 function SortBy({
   sortValue,
@@ -8,20 +16,25 @@ function SortBy({
   setSortValue: (sortValue: string) => void;
 }) {
   return (
-    <select
-      className="cursor-pointer border-gray-400 py-2 px-2 text-base border-2 rounded-lg w-40 outline-none bg-white"
+    <Select
       name="sort"
-      onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-        setSortValue(e.target.value)
-      }
+      onValueChange={(sortValue) => setSortValue(sortValue)}
       value={sortValue}
     >
-      <option value="default">Default</option>
-      <option value="a-z">Sort A-Z</option>
-      <option value="z-a">Sort Z-A</option>
-      <option value="low-to-high">Lowest Price</option>
-      <option value="high-to-low">Highest Price</option>
-    </select>
+      <SelectTrigger className="w-[130px] sm:w-[150px] md:w-[180px]">
+        <SelectValue placeholder="Sort By" />{" "}
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>Sort By</SelectLabel>
+          <SelectItem value="default">Default</SelectItem>
+          <SelectItem value="a-z">Sort A-Z</SelectItem>
+          <SelectItem value="z-a">Sort Z-A</SelectItem>
+          <SelectItem value="low-to-high">Lowest Price</SelectItem>
+          <SelectItem value="high-to-low">Highest Price</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
 }
 

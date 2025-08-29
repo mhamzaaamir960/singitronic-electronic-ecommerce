@@ -94,7 +94,7 @@ const googleLogin = asyncHandler(async (req, res) => {
     maxAge: 60 * 24 * 60 * 60 * 1000,
   };
 
-  if (!user) {  
+  if (!user) {
     const newUser = await User.create({
       fullName: profile.name,
       emailAddress: profile.email,
@@ -103,7 +103,7 @@ const googleLogin = asyncHandler(async (req, res) => {
       authProvider: "google",
       profileImage: {
         url: profile.picture,
-        public_id: ""
+        public_id: "",
       },
     });
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
@@ -114,9 +114,14 @@ const googleLogin = asyncHandler(async (req, res) => {
       .cookie("refreshToken", refreshToken, options)
       .redirect("http://localhost:5173");
   }
+
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
     user
   );
+
+  if (!user.authProvider) {
+    res.redirect("http://localhost:5173");
+  }
 
   return res
     .cookie("accessToken", accessToken, options)

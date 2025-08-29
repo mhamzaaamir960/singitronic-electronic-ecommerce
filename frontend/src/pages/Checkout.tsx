@@ -7,10 +7,13 @@ import type { AppDispatch, RootState } from "../store/store";
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { fetchCartItems } from "../store/slices/cartSlice";
 import toast from "react-hot-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function Checkout() {
   const dispatch = useDispatch<AppDispatch>();
-  const { items } = useSelector((state: RootState) => state.cartSlice);
+  const { items, totalPrice } = useSelector(
+    (state: RootState) => state.cartSlice
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<Order>({
     firstName: "",
@@ -78,7 +81,7 @@ function Checkout() {
       });
       toast.success(responseData.message);
     } catch (error: Error | unknown) {
-      setLoading(false)
+      setLoading(false);
       toast.error(error instanceof Error ? error.message : (error as string));
     }
   };
@@ -99,8 +102,8 @@ function Checkout() {
       </HeadingSection>
 
       <div className="w-full min-h-[1000px] flex justify-center bg-white">
-        <MaxWidthWrapper className="flex justify-between gap-x-10 p-10">
-          <div className="w-[45%] flex flex-col gap-y-10 p-2">
+        <MaxWidthWrapper className="flex flex-col md:flex-row justify-center items-center md:items-start gap-10 md:gap-5 lg:gap-20 p-5 md:p-10">
+          <div className="w-full md:w-[45%] flex flex-col gap-y-10 p-2">
             {/* Contact Information */}
             <div className="w-full min-h-[300px] flex flex-col gap-y-5">
               <h4 className="text-xl font-semibold text-gray-700 mb-2">
@@ -324,7 +327,7 @@ function Checkout() {
             <div className="w-full h-[1px] bg-gray-300 rounded-full" />
             <button
               onClick={handleSubmit}
-              className="cursor-pointer w-full h-10 bg-blue-500 hover:bg-blue-500/90 text-xl font-semibold text-white rounded "
+              className="hidden md:block cursor-pointer w-full h-10 bg-blue-500 hover:bg-blue-500/90 text-xl font-semibold text-white rounded "
             >
               {loading ? (
                 <span className="loader w-[20px] h-[20px] border-2 border-gray-100" />
@@ -334,60 +337,80 @@ function Checkout() {
             </button>
           </div>
 
-          <div className="w-[45%] p-2">
+          <div className="w-full md:w-[45%] p-2">
             <h4 className="text-xl font-semibold text-gray-700">
               Order Summary
             </h4>
 
-            <div>
-              {items.length > 0 &&
-                items.map((item: { productId: Product; quantity: number }) => {
-                  const image = item.productId.productImage as CategoryImage;
-                  return (
-                    <div
-                      key={item.productId._id}
-                      className="w-full h-[150px] border-b border-gray-300 flex items-center gap-x-5"
-                    >
-                      <img
-                        src={image.url}
-                        className="w-[100px] h-[100px] object-cover"
-                      />
-                      <div className="w-full flex justify-between">
-                        <div className="">
-                          <h5 className="text-base font-medium text-gray-800">
-                            {item.productId.name}
-                          </h5>
-                          <p className="flex items-center text-base text-gray-500">
-                            <RxCross2 className="text-sm" />
-                            {item.quantity}
-                          </p>
+            <div className={`flex flex-col ${items.length > 0 ? "gap-0": "gap-3 mt-5"}`}>
+              {items.length > 0
+                ? items.map(
+                    (item: { productId: Product; quantity: number }) => {
+                      const image = item.productId
+                        .productImage as CategoryImage;
+                      return (
+                        <div
+                          key={item.productId._id}
+                          className="w-full h-[150px] border-b border-gray-300 flex items-center gap-x-5"
+                        >
+                          <img
+                            src={image.url}
+                            className="w-[100px] h-[100px] object-cover"
+                          />
+                          <div className="w-full flex justify-between">
+                            <div className="">
+                              <h5 className="text-base font-medium text-gray-800">
+                                {item.productId.name}
+                              </h5>
+                              <p className="flex items-center text-base text-gray-500">
+                                <RxCross2 className="text-sm" />
+                                {item.quantity}
+                              </p>
+                            </div>
+                            <p className="text-base font-semibold">
+                              Rs.{item.productId.price}
+                            </p>
+                          </div>
                         </div>
-                        <p className="text-base font-semibold">
-                          Rs.{item.productId.price}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
+                      );
+                    }
+                  )
+                : Array.from({ length: 2 }, (_, index: number) => (
+                    <Skeleton key={index} className="w-full h-[150px]" />
+                  ))}
             </div>
             <div className="w-full flex items-center justify-between mt-10">
               <p className="text-md text-gray-500">Subtotal</p>
-              <p className="text-md text-gray-800 font-medium">$500.00</p>
+              <p className="text-md text-gray-800 font-medium">
+                Rs.{totalPrice}
+              </p>
             </div>
             <div className="w-full flex items-center justify-between my-5">
               <p className="text-md text-gray-500">Shipping</p>
-              <p className="text-md text-gray-800 font-medium">$22.00</p>
+              <p className="text-md text-gray-800 font-medium">Rs.300.00</p>
             </div>
             <div className="w-full flex items-center justify-between">
               <p className="text-md text-gray-500">Taxes</p>
-              <p className="text-md text-gray-800 font-medium">$44</p>
+              <p className="text-md text-gray-800 font-medium">Rs.120.00</p>
             </div>
             <div className="w-full h-[1px] bg-gray-200 rounded-full my-5" />
             <div className="w-full flex items-center justify-between">
-              <p className="text-lg text-gray-800 font-semibold"> Total</p>
-              <p className="text-lg text-gray-800 font-semibold">$269</p>
+              <p className="text-lg text-gray-800 font-semibold">Total</p>
+              <p className="text-lg text-gray-800 font-semibold">
+                Rs.{totalPrice && totalPrice + 420.0}
+              </p>
             </div>
           </div>
+          <button
+            onClick={handleSubmit}
+            className="md:hidden cursor-pointer w-full h-10 bg-blue-500 hover:bg-blue-500/90 text-xl font-semibold text-white rounded "
+          >
+            {loading ? (
+              <span className="loader w-[20px] h-[20px] border-2 border-gray-100" />
+            ) : (
+              "Place Order"
+            )}
+          </button>
         </MaxWidthWrapper>
       </div>
     </>

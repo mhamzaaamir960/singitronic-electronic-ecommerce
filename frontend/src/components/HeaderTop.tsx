@@ -37,32 +37,32 @@ function HeaderTop() {
   };
   return (
     <div className="w-full h-10 flex br justify-center items-center bg-blue-500">
-      <MaxWidthWrapper className="flex justify-between">
-        <ul className="flex items-center gap-x-5">
-          <li className="flex items-center gap-x-2">
-            <FaHeadphones className="text-white text-xl" />
-            <span className="text-white text-base font-semibold">
+      <MaxWidthWrapper className="flex justify-end sm:justify-between">
+        <ul className=" hidden sm:flex items-center gap-x-3 md:gap-x-5">
+          <li className="flex items-center gap-x-1 md:gap-x-2">
+            <FaHeadphones className="text-white text-lg md:text-xl" />
+            <span className="text-white text-sm md:text-base font-semibold">
               +92 326 3454889
             </span>
           </li>
-          <li className="flex items-center gap-x-2">
-            <FaRegEnvelope className="text-white text-xl" />
-            <span className="text-white text-base font-semibold">
+          <li className="flex items-center gap-x-1 md:gap-x-2">
+            <FaRegEnvelope className="text-white text-lg md:text-xl" />
+            <span className="text-white text-sm md:text-base font-semibold">
               singitronic@gmail.com
             </span>
           </li>
         </ul>
 
         {isAuthenticated ? (
-          <ul className="flex items-center gap-x-5">
-            <li className="text-white text-base font-semibold">
+          <ul className="flex items-center gap-x-3 md:gap-x-5 ">
+            <li className="text-white text-sm md:text-base font-semibold">
               {user?.fullName}
             </li>
             {user?.role === "admin" && (
               <li>
                 <Link
                   to={"/admin"}
-                  className="text-white text-base font-semibold"
+                  className="text-white text-sm md:text-base font-semibold"
                 >
                   Admin
                 </Link>
@@ -72,10 +72,10 @@ function HeaderTop() {
               <button
                 onClick={handleLogout}
                 disabled={loading}
-                className="flex items-center gap-x-2 cursor-pointer"
+                className="flex items-center gap-x-1 md:gap-x-2 cursor-pointer"
               >
-                <FaRegUser className="text-white text-xl" />
-                <span className="text-white text-base font-semibold">
+                <FaRegUser className="text-white text-lg md:text-xl" />
+                <span className="text-white text-sm md:text-base font-semibold">
                   Logout
                 </span>
               </button>
@@ -84,17 +84,17 @@ function HeaderTop() {
         ) : (
           <ul className="flex items-center gap-x-5">
             <li>
-              <Link to={"/login"} className="flex items-center gap-x-2">
-                <FaRegUser className="text-white text-xl" />
-                <span className="text-white text-base font-semibold">
+              <Link to={"/login"} className="flex items-center gap-x-1 md:gap-x-2">
+                <FaRegUser className="text-white text-lg md:text-xl" />
+                <span className="text-white text-sm md:text-base font-semibold">
                   Login
                 </span>
               </Link>
             </li>
             <li>
-              <Link to={"/register"} className="flex items-center gap-x-2">
-                <FaRegUser className="text-white text-xl" />
-                <span className="text-white text-base font-semibold">
+              <Link to={"/register"} className="flex items-center gap-x-1 md:gap-x-2">
+                <FaRegUser className="text-white text-lg md:text-xl" />
+                <span className="text-white text-sm md:text-base font-semibold">
                   Register
                 </span>
               </Link>

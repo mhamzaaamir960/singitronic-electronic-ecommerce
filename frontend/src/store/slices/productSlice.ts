@@ -131,6 +131,7 @@ const productSlice = createSlice({
     builder.addCase(
       getSingleProduct.fulfilled,
       (state: ProductState, action: PayloadAction<Product>) => {
+        state.loading = false
         state.product = action.payload;
       }
     );

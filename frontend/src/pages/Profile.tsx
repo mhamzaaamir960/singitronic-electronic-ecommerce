@@ -113,11 +113,11 @@ function Profile() {
       <PopUp
         isOpen={openPopUp}
         setIsOpen={setOpenPopUp}
-        className="w-full max-w-[500px] flex flex-col items-center gap-y-5 p-10"
+        className="w-full min-w-[300px] max-w-[500px] flex flex-col items-center gap-y-5 mx-5 p-5 md:p-10"
       >
         <div
           onClick={imageRefHandler}
-          className="cursor-pointer w-[100px] h-[100px] rounded-full border-2 border-blue-500"
+          className="cursor-pointer w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] rounded-full border-2 border-blue-500"
         >
           <input
             ref={imageRef}
@@ -143,7 +143,7 @@ function Profile() {
         <div className="w-full flex flex-col gap-y-1">
           <label
             htmlFor="fullName"
-            className="text-lg font-medium text-gray-800"
+            className="text-base sm:text-lg font-medium text-gray-800"
           >
             Full Name*
           </label>
@@ -159,7 +159,7 @@ function Profile() {
         <div className="w-full flex flex-col gap-y-1">
           <label
             htmlFor="phoneNumber"
-            className="text-lg font-medium text-gray-800"
+            className="text-base sm:text-lg font-medium text-gray-800"
           >
             Phone Number
           </label>
@@ -175,7 +175,7 @@ function Profile() {
         <address className="flex flex-col gap-3">
           <label
             htmlFor="address"
-            className="text-lg font-medium text-gray-800"
+            className="text-base sm:text-lg font-medium text-gray-800"
           >
             Address
           </label>
@@ -236,20 +236,20 @@ function Profile() {
           )}
         </button>
       </PopUp>
-      <div className="w-full min-h-[500px] bg-white flex justify-center">
+      <div className="min-w-[300px] w-full min-h-[500px] bg-white flex justify-center items-center">
         <MaxWidthWrapper className="relative top-0 w-full flex  flex-col items-center gap-x-20 p-5">
           <button
             onClick={() => setOpenPopUp(true)}
-            className="absolute top-10 right-10 cursor-pointer text-xl font-medium text-white bg-blue-500  hover:bg-blue-600 px-5 py-2 rounded"
+            className="absolute -top-10 sm:top-0 right-2 cursor-pointer text-lg sm:text-xl font-medium text-white bg-blue-500  hover:bg-blue-600 px-3 py-1 sm:px-5 sm:py-2 rounded"
           >
             Edit Profile
           </button>
-          <div className="w-[150px] h-[150px] rounded-full border-2 border-blue-500">
+          <div className="w-[120px] h-[120px] md:w-[150px] md:h-[150px] rounded-full border-2 border-blue-500">
             {user?.profileImage ? (
               <img
                 src={image?.url}
                 alt={`${user.fullName} image`}
-                className="w-full h-full object-fill rounded-full"
+                className="w-full h-full object-fill rounded-full "
               />
             ) : (
               <img
@@ -259,20 +259,20 @@ function Profile() {
               />
             )}
           </div>
-          <div className="flex flex-col items-center gap-y-5 mt-10">
-            <h4 className="capitalize text-5xl font-semibold text-gray-800">
+          <div className="flex flex-col items-center  gap-y-3 sm:gap-y-5 mt-10">
+            <h4 className="capitalize text-3xl sm:text-4xl md:text-5xl font-semibold text-gray-800">
               {user?.fullName}
             </h4>
 
-            <p className=" text-2xl font-medium text-gray-800">
+            <p className="text-lg sm:text-xl md:text-2xl font-medium text-gray-800">
               {user?.emailAddress}
             </p>
             {user?.phoneNumber && (
-              <p className=" text-2xl font-medium text-gray-800">
+              <p className=" text-lg sm:text-xl md:text-2xl font-medium text-gray-800">
                 {user?.phoneNumber}
               </p>
             )}
-            <p className="capitalize text-2xl font-medium text-black">
+            <p className="capitalize text-lg sm:text-xl md:text-2xl font-medium text-black">
               Role: {user?.role}
             </p>
 

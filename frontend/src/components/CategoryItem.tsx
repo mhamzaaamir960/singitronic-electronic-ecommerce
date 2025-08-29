@@ -7,12 +7,9 @@ interface CategoryItemProps {
 
 const CategoryItem = ({ title, children }: CategoryItemProps) => {
   return (
-    <div>
-      <div className="w-[250px] h-[120px] flex flex-col items-center gap-y-2  cursor-pointer bg-white py-5 text-black hover:bg-gray-100">
-        {children}
-
-        <h3 className="font-semibold text-xl">{title}</h3>
-      </div>
+    <div className="w-[120px] h-[80px] sm:w-[150px] h-[100px] md:w-[175px] lg:w-[200px] xl:w-[240px] lg:h-[120px] flex flex-col items-center gap-y-1 sm:gap-y-2  cursor-pointer bg-white py-5 text-black hover:bg-gray-100">
+      {children}
+      <h3 className="font-semibold text-base sm:text-lg lg:text-xl">{title}</h3>
     </div>
   );
 };

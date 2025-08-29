@@ -8,7 +8,7 @@ function MaxWidthWrapper({
   className?: string;
 }) {
   return (
-    <div className={cn(`max-w-[1536px] w-full`, className)}>{children}</div>
+    <div className={cn(`min-w-[300px] max-w-[1536px] w-full px-5`, className)}>{children}</div>
   );
 }
 

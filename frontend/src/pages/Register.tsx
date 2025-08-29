@@ -65,16 +65,16 @@ function Register() {
       <HeadingSection pageName="Register">
         <h3>Register</h3>
       </HeadingSection>
-      <div className="w-full min-h-[700px] flex justify-center bg-white">
-        <MaxWidthWrapper className="flex flex-col justify-center items-center gap-y-10 p-10">
-          <h4 className="text-2xl text-gray-800 font-medium ">
+      <div className="min-w-[300px] w-full min-h-[600px] flex justify-center bg-white">
+        <MaxWidthWrapper className="flex flex-col justify-center items-center gap-y-10 p-5 md:p-10">
+          <h4 className="text-xl sm:text-2xl text-gray-800 font-medium text-center">
             Sign Up on our Website!
           </h4>
           <div className="max-w-[500px] w-full min-h-[500px] flex flex-col justify-center items-center gap-y-4 border border-gray-50 shadow rounded p-10 ">
             <div className="w-full flex flex-col gap-y-1">
               <label
                 htmlFor="fullName"
-                className="text-lg font-medium text-gray-800"
+                className="text-base sm:text-lg font-medium text-gray-800"
               >
                 Full Name
               </label>
@@ -91,7 +91,7 @@ function Register() {
             <div className="w-full flex flex-col gap-y-1">
               <label
                 htmlFor="emailAddress"
-                className="text-lg font-medium text-gray-800"
+                className="text-base   sm:text-lg font-medium text-gray-800"
               >
                 Email Address
               </label>
@@ -108,7 +108,7 @@ function Register() {
             <div className="w-full flex flex-col gap-y-1">
               <label
                 htmlFor="password"
-                className="text-lg font-medium text-gray-800"
+                className="text-base   sm:text-lg font-medium text-gray-800"
               >
                 Password
               </label>
@@ -125,7 +125,7 @@ function Register() {
             <div className="w-full flex flex-col gap-y-1">
               <label
                 htmlFor="confirmPassword"
-                className="text-lg font-medium text-gray-800"
+                className="text-base   sm:text-lg font-medium text-gray-800"
               >
                 Confirm Password
               </label>
@@ -143,7 +143,7 @@ function Register() {
               <input required id="privacyPolicy" type="checkbox" />
               <label
                 htmlFor="privacyPolicy"
-                className="select-none text-sm text-gray-800"
+                className="select-none text-[12px] sm:text-sm text-gray-800"
               >
                 Accept our terms and privacy policy
               </label>

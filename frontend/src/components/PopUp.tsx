@@ -16,7 +16,7 @@ function PopUp({
   return (
     <>
       {isOpen && (
-        <div className="w-full h-full flex justify-center items-center bg-gray-700/50 fixed inset-0 z-50">
+        <div className="min-w-[250px] w-full h-full flex justify-center items-center bg-gray-700/50 fixed inset-0 z-50">
           <div
             className={cn(
               `relative min-w-[400px] min-h-[200px] bg-white rounded-lg shadow drop-shadow-xl p-5`,

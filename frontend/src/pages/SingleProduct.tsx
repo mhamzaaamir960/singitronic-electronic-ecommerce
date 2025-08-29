@@ -1,6 +1,7 @@
 import { AiFillStar } from "react-icons/ai";
 import MaxWidthWrapper from "../utils/MaxWidthWrapper";
 import { FaCheck, FaHeart } from "react-icons/fa";
+import { RxCross2 } from "react-icons/rx";
 import { useEffect } from "react";
 import { LuMinus, LuPlus } from "react-icons/lu";
 import {
@@ -24,10 +25,13 @@ import {
   fetchWishlist,
   toogleItemWishlit,
 } from "../store/slices/wishlistSlice";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function SingleProduct() {
   const { productId } = useParams();
-  const { product } = useSelector((state: RootState) => state.productsSlice);
+  const { product, loading } = useSelector(
+    (state: RootState) => state.productsSlice
+  );
   const { itemQuantity } = useSelector((state: RootState) => state.cartSlice);
   const { isItemInWishlist } = useSelector(
     (state: RootState) => state.wishlistSlice
@@ -67,17 +71,19 @@ function SingleProduct() {
     }
   }, [dispatch, productId]);
 
-
   return (
-    <div className="w-full min-h-[900px] flex justify-center items-center bg-white mt-20">
-      <MaxWidthWrapper className="flex justify-center items-center gap-14 ">
-        <img
-          src={image?.url}
-          alt={product?.name}
-          width={550}
-          className="shadow"
-        />
-        <div className="flex flex-col gap-y-2 ">
+    <div className="w-full min-w-[300px] min-h-[700px] lg:min-h-[800px] flex justify-center items-center bg-white  mt-24">
+      <MaxWidthWrapper className="flex flex-col md:flex-row justify-center items-center gap-10 xl:gap-14 py-20 md:py-0 ">
+        {image ? (
+          <img
+            src={image?.url}
+            alt={product?.name}
+            className="shadow w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] xl:w-[500px] xl:h-[500px] xl:w-[550px] xl:h-[550px]"
+          />
+        ) : (
+          <Skeleton className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] xl:w-[500px] xl:h-[500px] xl:w-[550px] xl:h-[550px] bg-gray-200" />
+        )}
+        <div className="flex flex-col items-center md:items-start gap-y-1 xl:gap-y-2 ">
           <div className="flex items-center gap-x-1 text-base">
             <AiFillStar className="text-yellow-500 text-xl" />
             <AiFillStar className="text-yellow-500 text-xl" />
@@ -86,13 +92,31 @@ function SingleProduct() {
             <AiFillStar className="text-yellow-500 text-xl" />
             (3 Reviews)
           </div>
-          <h3 className="text-3xl font-medium mt-5 mb-3">{product?.name}</h3>
-          <p className="text-lg font-semibold">${product?.price}</p>
-          <div className="flex items-center gap-x-2 my-3 text-xl ">
+          {product?.name ? (
+            <h3 className="text-3xl font-medium mt-3 xl:mt-5 mb-2 xl:mb-3">
+              {product.name}
+            </h3>
+          ) : (
+            <Skeleton className="w-[200px] h-8 bg-gray-200" />
+          )}
+          {product?.price ? (
+            <p className="text-lg font-semibold">Rs.{product?.price}</p>
+          ) : (
+            <Skeleton className="w-[200px] h-8 bg-gray-200" />
+          )}
+          <div className="flex items-center gap-x-2 my-2 xl:my-3 text-xl ">
             <p className="font-medium">Avaiability: </p>
-            <p className="text-green-400 text-base flex items-center gap-x-2">
-              In Stock <FaCheck className="text-green-400 text-sm" />
-            </p>
+            {loading ? (
+              <Skeleton className="w-[170px] h-8 bg-gray-200" />
+            ) : product?.inStock ? (
+              <p className="text-green-400 text-base flex items-center gap-x-2">
+                In Stock <FaCheck className="text-green-400 text-lg" />
+              </p>
+            ) : (
+              <p className="text-red-400 text-base flex items-center gap-x-2">
+                Out Of Stock <RxCross2 className="text-red-400 text-lg" />
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-x-2">
             <p className="text-xl font-medium">Quantity: </p>
@@ -121,11 +145,11 @@ function SingleProduct() {
           <div className="flex gap-x-5 my-5">
             <button
               onClick={handleAddToCart}
-              className="uppercase text-blue-500 text-lg border border-gray-300 hover:bg-gray-50 px-10 py-1 rounded-lg cursor-pointer"
+              className="uppercase text-blue-500 text-base lg:text-lg border border-gray-300 hover:bg-gray-50 px-3 lg:px-5 xl:px-10 py-1 rounded-lg cursor-pointer"
             >
               Add to Cart
             </button>
-            <button className="uppercase text-white text-lg bg-blue-500 hover:bg-blue-500/90 px-12 py-1 rounded-lg cursor-pointer  ">
+            <button className="uppercase text-white text-base lg:text-lg bg-blue-500 hover:bg-blue-500/90 px-5 lg:px-7 xl:px-12 py-1 rounded-lg cursor-pointer  ">
               Buy Now
             </button>
           </div>

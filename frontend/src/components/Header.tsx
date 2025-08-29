@@ -19,10 +19,7 @@ function Header() {
   const { totalCartItems } = useSelector((state: RootState) => state.cartSlice);
   const { totalItems } = useSelector((state: RootState) => state.wishlistSlice);
   const { user } = useSelector((state: RootState) => state.authSlice);
-  const profileImage =
-    user?.profileImage && user.profileImage.url
-      ? user.profileImage.url
-      : user?.profileImage;
+  const profileImage = user?.profileImage as CategoryImage;
 
   useEffect(() => {
     dispatch(getTotalCartItems());
@@ -30,46 +27,46 @@ function Header() {
     dispatch(fetchUser());
   }, [dispatch]);
   return (
-    <header className="fixed top-0 w-full flex flex-col items-center bg-white">
+    <header className="fixed top-0 w-full flex flex-col items-center bg-white z-50">
       <HeaderTop />
-      <MaxWidthWrapper className=" h-32 bg-white flex justify-between items-center">
+      <MaxWidthWrapper className="h-20 sm:h-24 md:h-32 bg-white flex justify-between items-center gap-x-3 md:gap-x-0">
         <Link to={"/"}>
           <img
             src="/logo.svg"
             width={300}
             height={300}
             alt="singitronic logo"
-            className=""
+            className="w-[140px] sm:w-[200px]"
           />
         </Link>
         <SearchInput />
-        <ul className="flex justify-center items-center gap-x-8">
+        <ul className="flex justify-center items-center gap-x-5 sm:gap-x-8">
           <li className="relative top-0">
             <Link to={"/wishlist"}>
-              <FaHeart className="text-black text-3xl" />
-              <span className="absolute -right-4 -top-4 w-[20px] h-[20px] rounded-full bg-blue-500 text-white text-sm font-semibold flex justify-center items-center ">
+              <FaHeart className="text-black text-2xl sm:text-3xl" />
+              <span className="absolute -right-3 -top-3 sm:-right-4 sm:-top-4 w-[16px] h-[16px] sm:w-[20px] sm:h-[20px] rounded-full bg-blue-500 text-white text-[10px] sm:text-sm font-semibold flex justify-center items-center ">
                 {totalItems}
               </span>
             </Link>
           </li>
           <li className="relative top-0 ">
             <Link to={"/cart"}>
-              <FaCartShopping className="text-black text-3xl" />
-              <span className="absolute -right-4 -top-4 w-[20px] h-[20px] rounded-full bg-blue-500 text-white text-sm font-semibold flex justify-center items-center ">
+              <FaCartShopping className="text-black text-2xl sm:text-3xl" />
+              <span className="absolute -right-3 -top-3 sm:-right-4 sm:-top-4 w-[16px] h-[16px] sm:w-[20px] sm:h-[20px] rounded-full bg-blue-500 text-white text-[10px] sm:text-sm font-semibold flex justify-center items-center ">
                 {totalCartItems}
               </span>
             </Link>
           </li>
           {isAuthenticated && (
-            <li>
+            <li className="w-[40px] h-[40px] sm:w-[50px] sm:h-[50px]">
               <Link to={"/profile"}>
                 {profileImage ? (
                   <img
-                    src={profileImage}
+                    src={profileImage.url}
                     width={300}
                     height={300}
                     alt={user?.fullName}
-                    className="cursor-pointer w-[50px] h-[50px] bg-white border-2 border-blue-500 rounded-full"
+                    className="cursor-pointer w-full h-full  bg-white border-2 border-blue-500 rounded-full object-fill"
                   />
                 ) : (
                   <img

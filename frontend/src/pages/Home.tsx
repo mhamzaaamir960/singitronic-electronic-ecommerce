@@ -10,10 +10,10 @@ function Home() {
  
   return (
     <>
-      <Hero />
-      <IntroducingSection />
-      <CategoryMenu />
-      <FeaturedProducts />
+        <Hero />
+        <IntroducingSection />
+        <CategoryMenu />
+        <FeaturedProducts />
     </>
   );
 }
