@@ -8,7 +8,7 @@ export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch("/api/v1/products");
+      const response = await fetch(`/api/v1/products`);
       const data = await response.json();
       if (!response.ok) {
         throw new Error(`Error: ${data.message}`);
@@ -25,17 +25,44 @@ export const fetchQueryProducts = createAsyncThunk(
   "products/fetchQueryProducts",
   async (
     query: {
-      sort: string;
-      inStock: boolean;
-      outOfStock: boolean;
-      rating: number;
-      price: number;
+      category?: string | "";
+      sort?: string;
+      inStock?: boolean;
+      outOfStock?: boolean;
+      rating?: number;
+      price?: number;
+      page: number;
+      limit: number;
     },
     { rejectWithValue }
   ) => {
     try {
       const response = await fetch(
-        `/api/v1/products/query-products/?sort=${query.sort}&inStock=${query.inStock}&outStock=${query.outOfStock}&rating=${query.rating}&price=${query.price}`
+        `/api/v1/products/query-products/?category=${query.category}&sort=${query.sort}&inStock=${query.inStock}&outStock=${query.outOfStock}&rating=${query.rating}&price=${query.price}&page=${query.page}&limit=${query.limit}`
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`Error: ${data.message}`);
+      }
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : (error as string)
+      );
+    }
+  }
+);
+export const searchProducts = createAsyncThunk(
+  "products/searchProducts",
+  async (
+    query: {
+      searchValue: string | "";
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await fetch(
+        `/api/v1/products/search-products/?search=${query.searchValue}`
       );
       const data = await response.json();
       if (!response.ok) {
@@ -71,6 +98,7 @@ interface ProductState {
   loading: boolean;
   products: Product[] | null;
   queryProducts: Product[] | null;
+  serachProducts: Product[] | null;
   error: string | null;
   product: Product | null;
 }
@@ -79,6 +107,7 @@ const initialState: ProductState = {
   loading: true,
   products: null,
   queryProducts: null,
+  serachProducts: null,
   error: null,
   product: null,
 };
@@ -113,6 +142,22 @@ const productSlice = createSlice({
       state.error = null;
     });
     builder.addCase(
+      searchProducts.fulfilled,
+      (state: ProductState, action: PayloadAction<Product[]>) => {
+        state.loading = false;
+        state.serachProducts = action.payload;
+        state.error = null;
+      }
+    );
+    builder.addCase(
+      searchProducts.rejected,
+      (state: ProductState, action: PayloadAction<unknown>) => {
+        state.loading = false;
+        state.serachProducts = null;
+        state.error = action.payload as string;
+      }
+    );
+    builder.addCase(
       fetchQueryProducts.fulfilled,
       (state: ProductState, action: PayloadAction<Product[]>) => {
         state.loading = false;
@@ -131,7 +176,7 @@ const productSlice = createSlice({
     builder.addCase(
       getSingleProduct.fulfilled,
       (state: ProductState, action: PayloadAction<Product>) => {
-        state.loading = false
+        state.loading = false;
         state.product = action.payload;
       }
     );

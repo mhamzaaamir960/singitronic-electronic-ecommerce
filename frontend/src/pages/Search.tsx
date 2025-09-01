@@ -4,15 +4,21 @@ import Product from "../components/Product";
 import MaxWidthWrapper from "../utils/MaxWidthWrapper";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store/store";
-import { fetchProducts } from "@/store/slices/productSlice";
+import { searchProducts } from "@/store/slices/productSlice";
 import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 function Search() {
   const dispatch = useDispatch<AppDispatch>();
-  const { products } = useSelector((state: RootState) => state.productsSlice);
+  const { serachProducts } = useSelector((state: RootState) => state.productsSlice);
+  const [searchParams] = useSearchParams();
+  let searchValue: string | "" = searchParams.get("search") as string;
+  if (searchValue === null) {
+    searchValue = "";
+  }
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    dispatch(searchProducts({ searchValue }));
+  }, [dispatch, searchValue]);
   return (
     <>
       <HeadingSection pageName="Search">
@@ -21,11 +27,11 @@ function Search() {
       <div className="min-w-[300px] w-full min-h-[500px] flex justify-center bg-white p-10 text-center">
         <MaxWidthWrapper className="flex flex-col items-center gap-y-10">
           <h4 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-800 font-medium">
-            Showing result for "Product Name"
+            Showing result for {searchValue}
           </h4>
           <div className="w-full flex flex-wrap justify-center gap-3 sm:gap-10 md:gap-5 lg:gap-8 2xl:gap-10">
-            {products && products.length > 0
-              ? products.map((product: Product) => {
+            {serachProducts && serachProducts.length > 0
+              ? serachProducts.map((product: Product) => {
                   const image = product.productImage as CategoryImage;
                   return (
                     <Product

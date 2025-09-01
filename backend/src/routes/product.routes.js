@@ -6,6 +6,7 @@ import {
   getAllProducts,
   getProduct,
   getQueryProducts,
+  serachProducts,
   updateProduct,
 } from "../controllers/product.controller.js";
 import { isAdmin, verifyJWT } from "../middlewares/auth.middleware.js";
@@ -22,5 +23,6 @@ router
   .patch(verifyJWT, isAdmin, updateProduct)
   .delete(verifyJWT, isAdmin, deleteProduct);
 router.route("/query-products").get(getQueryProducts);
+router.route("/search-products").get(serachProducts);
 
 export default router;

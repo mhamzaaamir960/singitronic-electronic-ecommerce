@@ -16,12 +16,14 @@ function AllProducts({
   rating,
   inStock,
   outOfStock,
+  category,
   setIsOpenSidebar,
 }: {
   price: number;
   rating: number;
   inStock: boolean;
   outOfStock: boolean;
+  category: string | "";
   setIsOpenSidebar: (openSidebar: boolean) => void;
 }) {
   const [sortValue, setSortValue] = useState<string>("default");
@@ -29,6 +31,10 @@ function AllProducts({
   const { queryProducts } = useSelector(
     (state: RootState) => state.productsSlice
   );
+  const [pageCounter, setPageCounter] = useState<number>(1);
+  // const page: string = searchParams.get("page");
+  // const limit: string = searchParams.get("limit");
+
   useEffect(() => {
     dispatch(
       fetchQueryProducts({
@@ -37,9 +43,21 @@ function AllProducts({
         inStock,
         outOfStock,
         rating,
+        category,
+        page: pageCounter,
+        limit: 6,
       })
     );
-  }, [dispatch, sortValue, inStock, outOfStock, rating, price]);
+  }, [
+    dispatch,
+    sortValue,
+    inStock,
+    outOfStock,
+    rating,
+    price,
+    category,
+    pageCounter,
+  ]);
   return (
     <div className=" w-full flex flex-col gap-y-5 ">
       <div className="flex justify-between items-center">
@@ -88,13 +106,20 @@ function AllProducts({
             ))}
       </div>
       <div className=" w-full h-[50px] flex justify-center items-center mt-5 ">
-        <button className="h-full cursor-pointer bg-blue-500/95 hover:bg-blue-500/100  px-3 rounded-l-lg">
+        <button
+          disabled={pageCounter < 2}
+          onClick={() => setPageCounter(pageCounter - 1)}
+          className="h-full cursor-pointer bg-blue-500/95 hover:bg-blue-500/100  px-3 rounded-l-lg"
+        >
           <MdOutlineKeyboardDoubleArrowLeft className="text-2xl text-white " />
         </button>
         <p className="h-full bg-blue-500/95 text-xl font-semibold text-white border-x border-white flex justify-center items-center px-5">
-          1
+          {pageCounter}
         </p>
-        <button className="h-full cursor-pointer bg-blue-500/95 hover:bg-blue-500/100 px-3 rounded-r-lg">
+        <button
+          onClick={() => setPageCounter(pageCounter + 1)}
+          className="h-full cursor-pointer bg-blue-500/95 hover:bg-blue-500/100 px-3 rounded-r-lg"
+        >
           <MdOutlineKeyboardDoubleArrowRight className="text-2xl text-white" />
         </button>
       </div>

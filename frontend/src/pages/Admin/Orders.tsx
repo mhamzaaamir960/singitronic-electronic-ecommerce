@@ -8,17 +8,15 @@ import {
 import type { AppDispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
 import { getAllOrders } from "../../store/slices/orderSlice";
-
+import { Skeleton } from "@/components/ui/skeleton";
 
 function Orders() {
   const dispatch = useDispatch<AppDispatch>();
   const { orders } = useSelector((state: RootState) => state.orderSlice);
 
-
   useEffect(() => {
     dispatch(getAllOrders());
   }, [dispatch]);
-
 
   return (
     <AdminLayout>
@@ -38,33 +36,76 @@ function Orders() {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order: Order) => {
-            const orderDate = new Date(order.createdAt!).toLocaleDateString();
-            return (
-              <tr key={order._id} className="bg-gray-100 p-2">
-                <td className="px-4 py-2">
-                  <input type="checkbox" />
-                </td>
-                <td className="px-4 py-2 text-gray-800 font-semibold">
-                  {order._id}
-                </td>
-                <td className="px-4 py-2">
-                  <h3 className="text-xl font-semibold text-gray-800">
-                    {order.firstName} {order.lastName}
-                  </h3>
-                  <span className="text-sm font-medium text-gray-800">
-                    {" "}
-                    {order.shippingAddress.country}
-                  </span>
-                </td>
-                <td className="px-4 py-2 text-gray-800">{order.status}</td>
-                <td className="px-4 py-2 font-semibold text-gray-800">
-                  {order.totalAmount}
-                </td>
-                <td className="px-4 py-2 text-gray-800">{orderDate}</td>
-              </tr>
-            );
-          })}
+          {orders && orders.length > 0
+            ? orders.map((order: Order) => {
+                const orderDate = new Date(
+                  order.createdAt!
+                ).toLocaleDateString();
+                return (
+                  <tr key={order._id} className="bg-gray-100 p-2">
+                    <td className="px-4 py-2">
+                      <input type="checkbox" />
+                    </td>
+                    <td className="px-4 py-2 text-gray-800 font-semibold">
+                      {order._id}
+                    </td>
+                    <td className="px-4 py-2">
+                      <h3 className="text-xl font-semibold text-gray-800">
+                        {order.firstName} {order.lastName}
+                      </h3>
+                      <span className="text-sm font-medium text-gray-800">
+                        {" "}
+                        {order.shippingAddress.country}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2 text-gray-800">{order.status}</td>
+                    <td className="px-4 py-2 font-semibold text-gray-800">
+                      {order.totalAmount}
+                    </td>
+                    <td className="px-4 py-2 text-gray-800">{orderDate}</td>
+                  </tr>
+                );
+              })
+            : Array.from({ length: 6 }, (_, index: number) => (
+                <tr className="w-full">
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100 rounded-l-lg"
+                    />
+                  </td>{" "}
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100"
+                    />
+                  </td>{" "}
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100"
+                    />
+                  </td>{" "}
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100"
+                    />
+                  </td>
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100"
+                    />
+                  </td>{" "}
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100 rounded-r-lg"
+                    />
+                  </td>
+                </tr>
+              ))}
         </tbody>
         <tfoot>
           <tr className="text-left">

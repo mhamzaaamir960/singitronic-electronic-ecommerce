@@ -21,6 +21,7 @@ import { fetchCategories } from "../../store/slices/categorySlice";
 import { LiaEditSolid } from "react-icons/lia";
 import { MdDelete } from "react-icons/md";
 import "../../utils/loader.css";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function Categories() {
   const { categories } = useSelector((state: RootState) => state.categorySlice);
@@ -135,11 +136,11 @@ function Categories() {
       <PopUp
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        className="w-full max-w-[500px] flex flex-col items-center gap-y-5 p-10"
+        className="w-full max-w-[500px] flex flex-col items-center gap-y-5 p-5 md:p-10 m-5"
       >
         <div
           onClick={imageRefHandler}
-          className="cursor-pointer w-[100px] h-[100px] rounded-full border-2 border-blue-500 "
+          className="cursor-pointer w-[70px] h-[70px] sm:w-[100px] sm:h-[100px] rounded-full border-2 border-blue-500 "
         >
           <input
             ref={imageRef}
@@ -166,7 +167,7 @@ function Categories() {
           )}
         </div>
         <div className="w-full flex flex-col gap-y-1">
-          <label htmlFor="name" className="text-lg font-medium text-gray-800">
+          <label htmlFor="name" className="text-base sm:text-lg font-medium text-gray-800">
             Category Name*
           </label>
           <input
@@ -181,7 +182,7 @@ function Categories() {
         <div className="w-full flex flex-col gap-y-1">
           <label
             htmlFor="description"
-            className="text-lg font-medium text-gray-800"
+            className="text-base sm:text-lg font-medium text-gray-800"
           >
             Description
           </label>
@@ -197,7 +198,7 @@ function Categories() {
           type="submit"
           onClick={handleSubmit}
           disabled={loading}
-          className="disabled:bg-green-500/50 self-end cursor-pointer w-[100px] h-10 flex justify-center items-center text-white text-xl font-medium bg-green-400 hover:bg-green-500 rounded-lg"
+          className="disabled:bg-green-500/50 self-end cursor-pointer w-[100px] h-10 flex justify-center items-center text-white text-lg sm:text-xl font-medium bg-green-400 hover:bg-green-500 rounded sm:rounded-lg"
         >
           {loading ? (
             <span className="loader w-[20px] h-[20px] border-2 border-gray-100" />
@@ -221,39 +222,72 @@ function Categories() {
           </tr>
         </thead>
         <tbody className="overflow-y-auto">
-          {categories &&
-            categories?.length > 0 &&
-            categories.map((category: Category) => {
-              const image = category.categoryImage as CategoryImage;
-              return (
-                <tr key={category?._id} className="bg-gray-100 p-2 ">
-                  <td className="px-4 py-2">
-                    <input type="checkbox" />
-                  </td>
-                  <td className="px-4 py-2">
-                    <img
-                      src={image.url}
-                      alt={category.name}
-                      className="w-12 h-12 object-cover inline-block rounded-lg"
+          {categories && categories?.length > 0
+            ? categories.map((category: Category) => {
+                const image = category.categoryImage as CategoryImage;
+                return (
+                  <tr key={category?._id} className="bg-gray-100 p-2 ">
+                    <td className="px-4 py-2">
+                      <input type="checkbox" />
+                    </td>
+                    <td className="px-4 py-2">
+                      <img
+                        src={image.url}
+                        alt={category.name}
+                        className="w-12 h-12 object-cover inline-block rounded-lg"
+                      />
+                    </td>
+                    <td className="px-4 py-2 text-lg text-gray-800">
+                      {category?.name}
+                    </td>
+                    <td className="px-4 py-2 text-base text-gray-800">
+                      {category?.description}
+                    </td>
+                    <td className="flex items-center justify-center gap-x-5 pt-5 px-4 text-center text-gray-800 font-semibold">
+                      <button onClick={(e) => openUpdatePopup(e, category)}>
+                        <LiaEditSolid className="cursor-pointer text-2xl text-green-500 hover:text-green-600" />
+                      </button>
+                      <button onClick={(e) => handleDelete(e, category._id)}>
+                        <MdDelete className="cursor-pointer text-2xl text-red-500 hover:text-red-600" />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
+            : Array.from({ length: 6 }, (_, index: number) => (
+                <tr className="w-full">
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100 rounded-l-lg"
+                    />
+                  </td>{" "}
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100"
+                    />
+                  </td>{" "}
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100"
+                    />
+                  </td>{" "}
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100"
                     />
                   </td>
-                  <td className="px-4 py-2 text-lg text-gray-800">
-                    {category?.name}
-                  </td>
-                  <td className="px-4 py-2 text-base text-gray-800">
-                    {category?.description}
-                  </td>
-                  <td className="flex items-center justify-center gap-x-5 pt-5 px-4 text-center text-gray-800 font-semibold">
-                    <button onClick={(e) => openUpdatePopup(e, category)}>
-                      <LiaEditSolid className="cursor-pointer text-2xl text-green-500 hover:text-green-600" />
-                    </button>
-                    <button onClick={(e) => handleDelete(e, category._id)}>
-                      <MdDelete className="cursor-pointer text-2xl text-red-500 hover:text-red-600" />
-                    </button>
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100 rounded-r-lg"
+                    />
                   </td>
                 </tr>
-              );
-            })}
+              ))}
         </tbody>
       </TableWrapper>
     </AdminLayout>

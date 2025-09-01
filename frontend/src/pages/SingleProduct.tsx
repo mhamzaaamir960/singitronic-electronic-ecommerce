@@ -26,6 +26,7 @@ import {
   toogleItemWishlit,
 } from "../store/slices/wishlistSlice";
 import { Skeleton } from "@/components/ui/skeleton";
+import toast from "react-hot-toast";
 
 function SingleProduct() {
   const { productId } = useParams();
@@ -36,30 +37,49 @@ function SingleProduct() {
   const { isItemInWishlist } = useSelector(
     (state: RootState) => state.wishlistSlice
   );
+  const { isAuthenticated } = useSelector(
+    (state: RootState) => state.authSlice
+  );
 
   const image = product?.productImage as CategoryImage;
   const dispatch = useDispatch<AppDispatch>();
 
   const handleAddToCart = async () => {
-    await dispatch(addToCart(productId as string));
-    await dispatch(getItemQuantity(productId as string));
-    await dispatch(getTotalCartItems());
+    if (!isAuthenticated) {
+      toast.error("Login your account before purschasing!");
+    } else {
+      await dispatch(addToCart(productId as string));
+      await dispatch(getItemQuantity(productId as string));
+      await dispatch(getTotalCartItems());
+    }
   };
 
   const handleIncrement = async () => {
-    await dispatch(incrementQuantity(productId as string));
-    await dispatch(getItemQuantity(productId as string));
+    if (!isAuthenticated) {
+      toast.error("Login your account before purschasing!");
+    } else {
+      await dispatch(incrementQuantity(productId as string));
+      await dispatch(getItemQuantity(productId as string));
+    }
   };
 
   const handleDecrement = async () => {
-    await dispatch(decreasedQuantity(productId as string));
-    await dispatch(getItemQuantity(productId as string));
+    if (!isAuthenticated) {
+      toast.error("Login your account before purschasing!");
+    } else {
+      await dispatch(decreasedQuantity(productId as string));
+      await dispatch(getItemQuantity(productId as string));
+    }
   };
 
   const handleWishlistClick = async () => {
+     if (!isAuthenticated) {
+      toast.error("Login your account before purschasing!");
+    } else {
     await dispatch(toogleItemWishlit(productId as string));
     await dispatch(fetchWishlist());
     await dispatch(checkItemInWishlist(productId as string));
+    }
   };
 
   useEffect(() => {

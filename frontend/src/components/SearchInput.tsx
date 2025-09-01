@@ -22,7 +22,7 @@ function SearchInput() {
       />
       <button
         type="submit"
-        disabled={!searchInput}
+        // disabled={!searchInput}
         className="cursor-pointer bg-blue-500 text-white rounded-r-xl hover:bg-blue-600 px-5 "
       >
         Search

@@ -183,7 +183,6 @@ const getProduct = asyncHandler(async (req, res) => {
 const getAllProducts = asyncHandler(async (req, res) => {
   // get all products
   // return a response
-
   const products = await Product.find().populate("categoryId");
   if (products.length < 1) {
     throw new ApiError(404, "Products not found!");
@@ -193,13 +192,36 @@ const getAllProducts = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, products, "All Products fetched successfully!"));
 });
+const serachProducts = asyncHandler(async (req, res) => {
+  // get all products
+  // return a response
+  const query = req.query;
+  let products = await Product.find().populate("categoryId");
+  if (query.search) {
+    products = products.filter(
+      (product) =>
+        product.name.toLowerCase().includes(query.search.toLowerCase()) ||
+        product.description.toLowerCase().includes(query.search.toLowerCase())
+    );
+  }
 
+  if (products.length < 1) {
+    throw new ApiError(404, "Products not found!");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, products, "All Products fetched successfully!"));
+});
 const getQueryProducts = asyncHandler(async (req, res) => {
   // get query from frontend
   // get all products before checking condition and sort if not default
   // return a response
 
   const query = req.query;
+  console.log(req.url);
+  const { page , limit  } = query;
+  const skip = (parseInt(page) - 1) * parseInt(limit);
 
   let sortType;
   if (query.sort === "a-z") {
@@ -212,8 +234,13 @@ const getQueryProducts = asyncHandler(async (req, res) => {
     sortType = { price: -1 };
   }
 
-  let products = await Product.find().populate("categoryId").sort(sortType);
+  let products = await Product.find()
+    .populate("categoryId")
+    .skip(skip)
+    .limit(parseInt(limit))
+    .sort(sortType);
   let filteredProducts;
+
   if (query.inStock === "true" && query.outStock === "true") {
     filteredProducts = products.filter(
       (product) =>
@@ -235,6 +262,13 @@ const getQueryProducts = asyncHandler(async (req, res) => {
     );
   } else {
     filteredProducts = [];
+  }
+
+  if (query.category && query.category !== "null") {
+    filteredProducts = filteredProducts.filter(
+      (product) =>
+        product.categoryId.name.toLowerCase() === query.category.toLowerCase()
+    );
   }
 
   if (filteredProducts.length < 1) {
@@ -259,4 +293,5 @@ export {
   getProduct,
   getAllProducts,
   getQueryProducts,
+  serachProducts,
 };

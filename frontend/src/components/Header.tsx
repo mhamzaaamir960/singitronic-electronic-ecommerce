@@ -27,7 +27,7 @@ function Header() {
     dispatch(fetchUser());
   }, [dispatch]);
   return (
-    <header className="fixed top-0 w-full flex flex-col items-center bg-white z-50">
+    <header className="fixed top-0 w-full flex flex-col items-center bg-white z-40">
       <HeaderTop />
       <MaxWidthWrapper className="h-20 sm:h-24 md:h-32 bg-white flex justify-between items-center gap-x-3 md:gap-x-0">
         <Link to={"/"}>

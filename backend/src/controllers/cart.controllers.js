@@ -197,12 +197,14 @@ const clearCart = asyncHandler(async (req, res) => {
   // check cart and delete cart
   // return a response
 
-  const userId = req.user_id;
+  const userId = req.user._id;
   if (!isValidObjectId(userId)) {
     throw new ApiError(401, "Invalid User Id!");
   }
 
-  await Cart.findOneAndDelete({ user: userId });
+  const cartProducts = await Cart.findOne({ user: userId });
+  cartProducts.items = [];
+  await cartProducts.save();
 
   return res
     .status(200)

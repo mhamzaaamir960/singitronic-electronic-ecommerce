@@ -6,6 +6,7 @@ import {
   TableHeadingWrapper,
   TableWrapper,
 } from "../../components";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // const users = [
 //   {
@@ -114,7 +115,7 @@ function Users() {
   return (
     <AdminLayout>
       <AdminSectionHeading title="All Users" />
-      <AddNewButton buttonTitle="ADD NEW USER" />
+      {/* <AddNewButton buttonTitle="ADD NEW USER" /> */}
       <TableWrapper>
         <thead>
           <tr className="text-left">
@@ -126,7 +127,7 @@ function Users() {
           </tr>
         </thead>
         <tbody className="overflow-y-auto ">
-          {users.map((user) => (
+          {users && users.length > 0 ?users.map((user) => (
             <tr key={user._id} className="bg-gray-100 p-2">
               <td className="px-4 py-2">
                 <input type="checkbox" />
@@ -135,7 +136,28 @@ function Users() {
               <td className="px-4 py-2 text-gray-800">{user.role}</td>
               <td>details</td>
             </tr>
-          ))}
+          )) : Array.from({ length: 6 }, (_, index: number) => (
+                <tr className="w-full">
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[60px] rounded-none bg-blue-100 rounded-l-lg"
+                    />
+                  </td>{" "}
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[60px] rounded-none bg-blue-100"
+                    />
+                  </td>{" "}
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[60px] rounded-none bg-blue-100 rounded-r-lg"
+                    />
+                  </td>
+                </tr>
+              ))}
         </tbody>
       </TableWrapper>
     </AdminLayout>

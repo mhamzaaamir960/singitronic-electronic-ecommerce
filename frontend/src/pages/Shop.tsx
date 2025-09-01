@@ -1,6 +1,7 @@
 import MaxWidthWrapper from "../utils/MaxWidthWrapper";
 import { AllProducts, BreadCrumb, Filters } from "../components";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 function Shop() {
   const [inStock, setInStock] = useState<boolean>(true);
@@ -8,6 +9,9 @@ function Shop() {
   const [price, setprice] = useState<number>(400000);
   const [rating, setRating] = useState<number>(5);
   const [openSidebar, setIsOpenSidebar] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoryValue: string | "" = searchParams.get("category") as string;
+  // console.log(categoryValue);
 
   return (
     <div className="min-w-[300px] w-full min-h-[800px] bg-white flex justify-center mt-20 sm:mt-24 md:mt-40 p-5">
@@ -32,6 +36,9 @@ function Shop() {
             rating={rating}
             price={price}
             setIsOpenSidebar={setIsOpenSidebar}
+            category={categoryValue}
+            searchParams={searchParams}
+            setSearchParams={setSearchParams}
           />
         </div>
       </MaxWidthWrapper>

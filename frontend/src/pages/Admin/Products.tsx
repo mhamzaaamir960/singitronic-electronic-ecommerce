@@ -19,6 +19,7 @@ import type { AppDispatch, RootState } from "../../store/store";
 import { fetchCategories } from "../../store/slices/categorySlice";
 import toast from "react-hot-toast";
 import { fetchProducts } from "../../store/slices/productSlice";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const manufacturers: string[] = [
   "Samsung",
@@ -166,11 +167,11 @@ function Products() {
       <PopUp
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        className="max-w-[800px] w-full flex gap-x-5 py-14 "
+        className="max-w-[800px] w-full flex flex-col sm:flex-row gap-5 py-14 m-5 mt-52 sm:mt-5 "
       >
         <div
           onClick={handleProductImageClick}
-          className="w-[50%] flex justify-center items-center cursor-pointer w-72 h-72 bg-gray-200 border-2 border-gray-300 rounded-lg"
+          className="w-full lg:w-[50%] flex justify-center items-center cursor-pointer h-72 bg-gray-200 border-2 border-gray-300 rounded-lg"
         >
           <input
             type="file"
@@ -192,7 +193,7 @@ function Products() {
             />
           )}
         </div>
-        <div className="w-[50%] flex flex-col gap-y-2">
+        <div className="w-full lg:w-[50%] flex flex-col gap-y-2">
           <div className="w-full flex flex-col gap-y-1">
             <label
               htmlFor="name"
@@ -394,54 +395,87 @@ function Products() {
           </tr>
         </thead>
         <tbody className="overflow-y-auto ">
-          {products &&
-            products.length > 0 &&
-            products.map((product: Product) => {
-              const image = product.productImage as CategoryImage;
-              return (
-                <tr key={product._id} className="bg-gray-100 p-2">
-                  <td className="px-4 py-2">
-                    <input type="checkbox" />
-                  </td>
-                  <td className="px-4 py-2 flex gap-x-3 items-center">
-                    <img
-                      src={image.url}
-                      alt={product.name}
-                      width={50}
-                      className="w-[50px] object-cover rounded-xl"
+          {products && products.length > 0
+            ? products.map((product: Product) => {
+                const image = product.productImage as CategoryImage;
+                return (
+                  <tr key={product._id} className="bg-gray-100 p-2">
+                    <td className="px-4 py-2">
+                      <input type="checkbox" />
+                    </td>
+                    <td className="px-4 py-2 flex gap-x-3 items-center">
+                      <img
+                        src={image.url}
+                        alt={product.name}
+                        width={50}
+                        className="w-[50px] object-cover rounded-xl"
+                      />
+                      <div className="inline-block">
+                        <h3 className="text-lg font-medium text-gray-800">
+                          {product.name}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {product.manufacturer}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="px-4 py-2 text-center text-nowrap">
+                      {product.inStock ? (
+                        <span className="text-white text-[12px] font-semibold bg-green-500 rounded-full px-3 py-1">
+                          In Stock
+                        </span>
+                      ) : (
+                        <span className="text-white text-[12px] font-semibold bg-red-500 rounded-full px-3 py-1">
+                          Out Of Stock
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2 text-center text-gray-800 font-medium">
+                      {product.price}
+                    </td>
+                    <td className="text-center">
+                      {" "}
+                      <button onClick={(e) => handleDelete(e, product._id)}>
+                        <MdDelete className="cursor-pointer text-2xl text-red-500 hover:text-red-600" />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
+            : Array.from({ length: 6 }, (_, index: number) => (
+                <tr className="w-full">
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100 rounded-l-lg"
                     />
-                    <div className="inline-block">
-                      <h3 className="text-lg font-medium text-gray-800">
-                        {product.name}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        {product.manufacturer}
-                      </p>
-                    </div>
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    {product.inStock ? (
-                      <span className="text-white text-[12px] font-semibold bg-green-500 rounded-full px-3 py-1">
-                        In Stock
-                      </span>
-                    ) : (
-                      <span className="text-white text-[12px] font-semibold bg-red-500 rounded-full px-3 py-1">
-                        Out Of Stock
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-2 text-center text-gray-800 font-medium">
-                    {product.price}
-                  </td>
-                  <td className="text-center">
-                    {" "}
-                    <button onClick={(e) => handleDelete(e, product._id)}>
-                      <MdDelete className="cursor-pointer text-2xl text-red-500 hover:text-red-600" />
-                    </button>
+                  </td>{" "}
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100"
+                    />
+                  </td>{" "}
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100"
+                    />
+                  </td>{" "}
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100"
+                    />
+                  </td>          
+                  <td>
+                    <Skeleton
+                      key={index}
+                      className="w-full h-[80px] rounded-none bg-blue-100 rounded-r-lg"
+                    />
                   </td>
                 </tr>
-              );
-            })}
+              ))}
         </tbody>
       </TableWrapper>
     </AdminLayout>

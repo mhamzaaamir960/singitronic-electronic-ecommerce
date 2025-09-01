@@ -147,6 +147,25 @@ const getTotalCartItems = createAsyncThunk(
     }
   }
 );
+const clearCart = createAsyncThunk(
+  "cart/clearCart",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch("/api/v1/cart", {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`Error :${data.message}`);
+      }
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : (error as string)
+      );
+    }
+  }
+);
 
 interface ItemsState {
   productId: Product;
@@ -256,6 +275,9 @@ export const cartSlice = createSlice({
         state.message = action.payload as string;
       }
     );
+    builder.addCase(clearCart.fulfilled, (state: CartState) => {
+      state.items = [];
+    });
   },
 });
 
@@ -267,5 +289,6 @@ export {
   decreasedQuantity,
   getItemQuantity,
   getTotalCartItems,
+  clearCart,
 };
 export default cartSlice.reducer;

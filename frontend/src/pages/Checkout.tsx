@@ -1,19 +1,22 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { HeadingSection } from "../components";
 import MaxWidthWrapper from "../utils/MaxWidthWrapper";
 import { RxCross2 } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../store/store";
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
-import { fetchCartItems } from "../store/slices/cartSlice";
+import { clearCart, fetchCartItems } from "../store/slices/cartSlice";
 import toast from "react-hot-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function Checkout() {
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { items, totalPrice } = useSelector(
-    (state: RootState) => state.cartSlice
-  );
+  const {
+    items,
+    totalPrice,
+    loading: cartLoading,
+  } = useSelector((state: RootState) => state.cartSlice);
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<Order>({
     firstName: "",
@@ -79,6 +82,7 @@ function Checkout() {
         items: items,
         orderMessage: "",
       });
+      await dispatch(clearCart());
       toast.success(responseData.message);
     } catch (error: Error | unknown) {
       setLoading(false);
@@ -89,6 +93,14 @@ function Checkout() {
   useEffect(() => {
     setData((prevData: Order) => ({ ...prevData, items: items }));
   }, [items]);
+
+  useEffect(() => {
+    if (cartLoading) {
+      return;
+    } else if (items.length <= 0) {
+      navigate("/cart");
+    }
+  }, [navigate, items, cartLoading]);
 
   useEffect(() => {
     dispatch(fetchCartItems());
@@ -342,7 +354,11 @@ function Checkout() {
               Order Summary
             </h4>
 
-            <div className={`flex flex-col ${items.length > 0 ? "gap-0": "gap-3 mt-5"}`}>
+            <div
+              className={`flex flex-col ${
+                items.length > 0 ? "gap-0" : "gap-3 mt-5"
+              }`}
+            >
               {items.length > 0
                 ? items.map(
                     (item: { productId: Product; quantity: number }) => {
