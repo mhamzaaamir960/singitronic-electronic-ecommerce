@@ -112,14 +112,14 @@ const googleLogin = asyncHandler(async (req, res) => {
     return res
       .cookie("accessToken", accessToken, options)
       .cookie("refreshToken", refreshToken, options)
-      .redirect("http://localhost:5173");
+      .redirect("https://singitronic-electronics.vercel.app");
   }
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
     user
   );
 
-  if (!user.authProvider) {
+  if (user.authProvider === "") {
     res.redirect("https://singitronic-electronics.vercel.app");
   }
 

@@ -93,6 +93,7 @@ function Categories() {
     setIsOpen(true);
     setData(category);
   };
+  
   const handleDelete = async (
     e: FormEvent<HTMLButtonElement>,
     categoryId: string | undefined
