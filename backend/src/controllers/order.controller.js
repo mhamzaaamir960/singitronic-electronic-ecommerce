@@ -131,8 +131,13 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
   // check fields are not empty
   // find order and update it
   // return a response
-
-  const { orderId, status } = req.body;
+  const userId = req.user._id;
+  if (!isValidObjectId(userId)) {
+    throw new ApiError(401, "Invalid User Id!");
+  }
+  const { orderId } = req.params;
+  const { status } = req.body;
+  console.log(status);
   if (!isValidObjectId(orderId)) {
     throw new ApiError(401, "Invalid Order Id!");
   }
@@ -141,8 +146,8 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Status is required!");
   }
 
-  await Order.findByIdAndUpdate(
-    orderId,
+  await Order.findOneAndUpdate(
+    { _id: orderId },
     {
       $set: { status: status },
     },
