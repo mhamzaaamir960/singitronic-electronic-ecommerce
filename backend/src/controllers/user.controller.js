@@ -120,7 +120,7 @@ const googleLogin = asyncHandler(async (req, res) => {
   );
 
   if (!user.authProvider) {
-    res.redirect("http://localhost:5173");
+    res.redirect("https://singitronic-electronics.vercel.app");
   }
 
   return res

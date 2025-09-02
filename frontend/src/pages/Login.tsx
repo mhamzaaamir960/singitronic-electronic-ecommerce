@@ -73,7 +73,8 @@ function Login() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:8080/api/v1/users/auth/google";
+    window.location.href =
+      "/api/v1/users/auth/google";
   };
   return (
     <>

@@ -9,7 +9,7 @@ function Shop() {
   const [price, setprice] = useState<number>(400000);
   const [rating, setRating] = useState<number>(5);
   const [openSidebar, setIsOpenSidebar] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const categoryValue: string | "" = searchParams.get("category") as string;
   // console.log(categoryValue);
 
@@ -37,8 +37,6 @@ function Shop() {
             price={price}
             setIsOpenSidebar={setIsOpenSidebar}
             category={categoryValue}
-            searchParams={searchParams}
-            setSearchParams={setSearchParams}
           />
         </div>
       </MaxWidthWrapper>
