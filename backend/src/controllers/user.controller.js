@@ -89,6 +89,8 @@ const googleLogin = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: true,
+    sameSite: "none",
+    domain: ".singitronic-electronics.vercel.app",
     maxAge: 60 * 24 * 60 * 60 * 1000,
   };
 
