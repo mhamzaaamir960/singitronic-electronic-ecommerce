@@ -86,11 +86,9 @@ const googleLogin = asyncHandler(async (req, res) => {
   );
   const profile = await response.json();
   const user = await User.findOne({ emailAddress: profile.email });
-
   const options = {
     httpOnly: true,
     secure: true,
-    sameSite: "lax",
     maxAge: 60 * 24 * 60 * 60 * 1000,
   };
 
@@ -115,9 +113,9 @@ const googleLogin = asyncHandler(async (req, res) => {
       .redirect("https://singitronic-electronics.vercel.app");
   }
 
-  if (!user.authProvider) {
-    res.redirect("https://singitronic-electronics.vercel.app");
-  }
+  // if (!user.authProvider) {
+  //   res.redirect("https://singitronic-electronics.vercel.app");
+  // }
   
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
     user
