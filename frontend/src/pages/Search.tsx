@@ -40,6 +40,7 @@ function Search() {
                       title={product.name}
                       price={product.price}
                       _id={product._id!}
+                      rating={product.rating}
                       color="white"
                     />
                   );

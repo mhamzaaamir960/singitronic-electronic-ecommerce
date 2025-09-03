@@ -73,12 +73,12 @@ function SingleProduct() {
   };
 
   const handleWishlistClick = async () => {
-     if (!isAuthenticated) {
+    if (!isAuthenticated) {
       toast.error("Login your account before purschasing!");
     } else {
-    await dispatch(toogleItemWishlit(productId as string));
-    await dispatch(fetchWishlist());
-    await dispatch(checkItemInWishlist(productId as string));
+      await dispatch(toogleItemWishlit(productId as string));
+      await dispatch(fetchWishlist());
+      await dispatch(checkItemInWishlist(productId as string));
     }
   };
 
@@ -104,16 +104,8 @@ function SingleProduct() {
           <Skeleton className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] xl:w-[500px] xl:h-[500px] xl:w-[550px] xl:h-[550px] bg-gray-200" />
         )}
         <div className="flex flex-col items-center md:items-start gap-y-1 xl:gap-y-2 ">
-          <div className="flex items-center gap-x-1 text-base">
-            <AiFillStar className="text-yellow-500 text-xl" />
-            <AiFillStar className="text-yellow-500 text-xl" />
-            <AiFillStar className="text-yellow-500 text-xl" />
-            <AiFillStar className="text-yellow-500 text-xl" />
-            <AiFillStar className="text-yellow-500 text-xl" />
-            (3 Reviews)
-          </div>
           {product?.name ? (
-            <h3 className="text-3xl font-medium mt-3 xl:mt-5 mb-2 xl:mb-3">
+            <h3 className="text-3xl font-medium ">
               {product.name}
             </h3>
           ) : (
@@ -123,6 +115,19 @@ function SingleProduct() {
             <p className="text-lg font-semibold">Rs.{product?.price}</p>
           ) : (
             <Skeleton className="w-[200px] h-8 bg-gray-200" />
+          )}
+          {product?.rating ? (
+            <div className="flex items-center gap-x-1 text-base mt-2">
+              {Array.from({ length: 5 }, (_, index) =>
+                product?.rating >= index + 1 ? (
+                  <AiFillStar className="text-yellow-500 text-base sm:text-lg md:text-xl" />
+                ) : (
+                  <AiFillStar className="text-gray-500 text-base sm:text-lg md:text-xl" />
+                )
+              )}
+            </div>
+          ) : (
+            <Skeleton className="w-[200px] h-8 bg-gray-200 mt-2" />
           )}
           <div className="flex items-center gap-x-2 my-2 xl:my-3 text-xl ">
             <p className="font-medium">Avaiability: </p>

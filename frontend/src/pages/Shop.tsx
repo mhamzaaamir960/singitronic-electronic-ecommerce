@@ -14,7 +14,7 @@ function Shop() {
   // console.log(categoryValue);
 
   return (
-    <div className="min-w-[300px] w-full min-h-[800px] bg-white flex justify-center mt-20 sm:mt-24 md:mt-40 p-5">
+    <div className="min-w-[300px] w-full min-h-[800px] bg-white flex justify-center mt-20 sm:mt-24 md:mt-40 p-3 sm:p-5">
       <MaxWidthWrapper className="w-full flex flex-col gap-y-5 mt-10">
         <BreadCrumb />
         <div className="flex justify-center gap-x-5 xl:gap-x-10">

@@ -220,7 +220,7 @@ const getQueryProducts = asyncHandler(async (req, res) => {
 
   const query = req.query;
   console.log(req.url);
-  const { page , limit  } = query;
+  const { page, limit } = query;
   const skip = (parseInt(page) - 1) * parseInt(limit);
 
   let sortType;
@@ -236,9 +236,9 @@ const getQueryProducts = asyncHandler(async (req, res) => {
 
   let products = await Product.find()
     .populate("categoryId")
+    .sort(sortType)
     .skip(skip)
-    .limit(parseInt(limit))
-    .sort(sortType);
+    .limit(parseInt(limit));
   let filteredProducts;
 
   if (query.inStock === "true" && query.outStock === "true") {
@@ -268,7 +268,7 @@ const getQueryProducts = asyncHandler(async (req, res) => {
     filteredProducts = filteredProducts.filter(
       (product) =>
         product.categoryId.name.toLowerCase() === query.category.toLowerCase()
-    );
+    )
   }
 
   if (filteredProducts.length < 1) {

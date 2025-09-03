@@ -18,7 +18,7 @@ function FeaturedProducts() {
         <h2 className="uppercase text-white text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold text-center ">
           Featured Products
         </h2>
-        <div className="w-full flex flex-wrap justify-center gap-3 sm:gap-10 md:gap-5 lg:gap-8 2xl:gap-10">
+        <div className="w-full flex flex-wrap justify-center gap-x-3 gap-y-5 sm:gap-10 md:gap-5 lg:gap-8 2xl:gap-10">
           {products && products.length > 0
             ? products.map((product: Product) => {
                 const image = product.productImage as CategoryImage;
@@ -29,14 +29,15 @@ function FeaturedProducts() {
                     title={product.name}
                     price={product.price}
                     _id={product._id!}
+                    rating={product.rating}
                   />
                 );
               })
             : Array.from({ length: 12 }, (_, index: number) => (
                 <div key={index} className="flex flex-col space-y-3">
-                  <Skeleton className="w-[187px] sm:w-[225px] lg:w-[300px] h-[200px] sm:h-[230px] lg:h-[300px] rounded bg-blue-100" />
-                  <Skeleton className="w-[187px] sm:w-[225px] lg:w-[300px] h-[10px] sm:h-[14px] md:h-[20px] rounded bg-blue-100" />
-                  <Skeleton className="w-[187px] sm:w-[225px] lg:w-[300px] h-[10px] sm:h-[14px] md:h-[20px] rounded bg-blue-100" />
+                  <Skeleton className="w-[140px] sm:w-[225px] lg:w-[300px] h-[200px] sm:h-[230px] lg:h-[300px] rounded bg-blue-100" />
+                  <Skeleton className="w-[140px] sm:w-[225px] lg:w-[300px] h-[10px] sm:h-[14px] md:h-[20px] rounded bg-blue-100" />
+                  <Skeleton className="w-[140px] sm:w-[225px] lg:w-[300px] h-[10px] sm:h-[14px] md:h-[20px] rounded bg-blue-100" />
                 </div>
               ))}
         </div>

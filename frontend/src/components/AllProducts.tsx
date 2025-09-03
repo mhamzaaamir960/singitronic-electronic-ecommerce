@@ -28,7 +28,7 @@ function AllProducts({
 }) {
   const [sortValue, setSortValue] = useState<string>("default");
   const dispatch = useDispatch<AppDispatch>();
-  const { queryProducts } = useSelector(
+  const { queryProducts, loading } = useSelector(
     (state: RootState) => state.productsSlice
   );
   const [pageCounter, setPageCounter] = useState<number>(1);
@@ -62,7 +62,7 @@ function AllProducts({
     <div className=" w-full flex flex-col gap-y-5 ">
       <div className="flex justify-between items-center">
         <div className="flex flex-col items-start justify-center gap-y-3">
-          <h3 className="uppercase  text-xl sm:text-2xl md:text-3xl text-black font-semibold f">
+          <h3 className="uppercase  text-xl sm:text-2xl md:text-3xl text-black font-semibold ">
             All Products
           </h3>
           <div className="lg:hidden flex items-center gap-x-2">
@@ -82,28 +82,35 @@ function AllProducts({
         </div>
       </div>
       <div className="w-full h-0.5 bg-gray-300/50 rounded-full my-3" />
-      <div className="flex flex-wrap justify-center gap-x-10 gap-y-5 p-5 ">
-        {queryProducts && queryProducts.length > 0
-          ? queryProducts.map((product: Product) => {
-              const image = product.productImage as CategoryImage;
-              return (
-                <Product
-                  key={product._id}
-                  price={product.price}
-                  src={image.url}
-                  title={product.name}
-                  _id={product._id!}
-                  color="blue"
-                />
-              );
-            })
-          : Array.from({ length: 12 }, (_, index: number) => (
-              <div key={index} className="flex flex-col space-y-3">
-                <Skeleton className="w-[187px] sm:w-[225px] lg:w-[300px] h-[200px] sm:h-[230px] lg:h-[300px] rounded bg-blue-100" />
-                <Skeleton className="w-[187px] sm:w-[225px] lg:w-[300px] h-[10px] sm:h-[14px] md:h-[20px] rounded bg-blue-100" />
-                <Skeleton className="w-[187px] sm:w-[225px] lg:w-[300px] h-[10px] sm:h-[14px] md:h-[20px] rounded bg-blue-100" />
-              </div>
-            ))}
+      <div className="flex flex-wrap justify-center gap-x-3 sm:gap-x-10 gap-y-5  sm:p-5 ">
+        {loading ? (
+          Array.from({ length: 6 }, (_, index: number) => (
+            <div key={index} className="flex flex-col space-y-3">
+              <Skeleton className="w-[140px] sm:w-[225px] lg:w-[300px] h-[200px] sm:h-[230px] lg:h-[300px] rounded bg-blue-100" />
+              <Skeleton className="w-[140px] sm:w-[225px] lg:w-[300px] h-[10px] sm:h-[14px] md:h-[20px] rounded bg-blue-100" />
+              <Skeleton className="w-[140px] sm:w-[225px] lg:w-[300px] h-[10px] sm:h-[14px] md:h-[20px] rounded bg-blue-100" />
+            </div>
+          ))
+        ) : queryProducts && queryProducts.length > 0 ? (
+          queryProducts.map((product: Product) => {
+            const image = product.productImage as CategoryImage;
+            return (
+              <Product
+                key={product._id}
+                price={product.price}
+                src={image.url}
+                title={product.name}
+                _id={product._id!}
+                rating={product.rating}
+                color="blue"
+              />
+            );
+          })
+        ) : (
+          <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-800 font-medium">
+            Products not found!
+          </p>
+        )}
       </div>
       <div className=" w-full h-[50px] flex justify-center items-center mt-5 ">
         <button

@@ -50,17 +50,17 @@ const sidebarLinks: SidebarLinksType[] = [
 function DashboardSidebar({ children }: { children: React.ReactNode }) {
   const [openSidebar, setOpenSidebar] = useState(false);
   return (
-    <div className=" w-full max-h-[900px] h-full flex justify-center bg-white">
+    <div className=" w-full max-h-[900px] h-fit flex justify-center bg-white">
       <MaxWidthWrapper className="relative flex justify-start mt-28 sm:mt-32 md:mt-40 flex gap-x-10">
         <ul
           className={`absolute left-0 lg:relative lg:left-auto h-full lg:max-h-fit  ${
             openSidebar ? "flex" : "hidden lg:flex"
-          } w-[300px] bg-blue-500 flex-col gap-y-5 py-10 rounded-b-lg  pt-14 `}
+          } w-[300px] bg-blue-500 flex-col gap-y-5 py-10 rounded-b-lg  pt-14 z-20 px-5 lg:px-0 `}
         >
           <button
             title="Close Sidebar"
             onClick={() => setOpenSidebar(false)}
-            className="absolute top-3 right-5 lg:hidden"
+            className="absolute top-5 right-3 lg:hidden"
           >
             <RxCross2 className="text-white text-2xl" />
           </button>
@@ -107,7 +107,7 @@ function DashboardSidebar({ children }: { children: React.ReactNode }) {
             appearance: "none",
             padding: "0px 10px 0px 0px",
           }}
-          className="w-full mt-2 h-full"
+          className="w-full mt-2 h-full min-h-[400px]"
         >
           {children}
         </div>
