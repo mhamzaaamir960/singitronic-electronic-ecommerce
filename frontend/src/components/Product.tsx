@@ -26,7 +26,7 @@ function Product({
       <h3
         className={
           color
-            ? "text-[16px] lg:text-xl text-blue-500 font-normal mt-2 uppercase flex line-clamp-1"
+            ? "text-[16px] lg:text-xl text-blue-500 font-normal mt-2 uppercase line-clamp-1"
             : "text-[16px] lg:text-xl text-white font-normal mt-2 uppercase line-clamp-1"
         }
       >

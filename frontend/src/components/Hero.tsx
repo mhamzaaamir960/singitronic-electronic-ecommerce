@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import MaxWidthWrapper from "../utils/MaxWidthWrapper";
 
 function Hero() {
@@ -15,15 +16,25 @@ function Hero() {
             molestiae!
           </p>
           <div className="flex gap-x-1 max-lg:gap-y-1">
-            <button className="cursor-pointer  bg-white text-blue-600 font-bold  px-5 sm:px-8 lg:px-12 py-3 text-base sm:text-lg lg:text-xl hover:bg-gray-100">
+            <Link
+              to={"/shop"}
+              className="cursor-pointer  bg-white text-blue-600 font-bold  px-5 sm:px-8 lg:px-12 py-3 text-base sm:text-lg lg:text-xl hover:bg-gray-100"
+            >
               BUY NOW
-            </button>
-            <button className="cursor-pointer bg-white text-blue-600 font-bold px-4 sm:px-8 lg:px-12 py-3 text-base sm:text-lg lg::text-xl hover:bg-gray-100">
+            </Link>
+            <Link
+              to={"/"}
+              className="cursor-pointer bg-white text-blue-600 font-bold px-4 sm:px-8 lg:px-12 py-3 text-base sm:text-lg lg::text-xl hover:bg-gray-100"
+            >
               LEARN MORE
-            </button>
+            </Link>
           </div>
         </div>
-        <img src="watch for banner.png" alt="watch banner" className="w-[250px] h-[250px] sm:w-[300px] sm:h-[300px]  md:w-[350px] md:h-[350px] xl:w-[400px] xl:h-[400px] 2xl:w-[500px] 2xl:h-[500px]" />
+        <img
+          src="watch for banner.png"
+          alt="watch banner"
+          className="w-[250px] h-[250px] sm:w-[300px] sm:h-[300px]  md:w-[350px] md:h-[350px] xl:w-[400px] xl:h-[400px] 2xl:w-[500px] 2xl:h-[500px]"
+        />
       </MaxWidthWrapper>
     </div>
   );
